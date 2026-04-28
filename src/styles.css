@@ -1,1 +1,317 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-pale: #F5EDD5;
+    --dark: #0D0D0D;
+    --dark-2: #181818;
+    --dark-3: #242424;
+    --dark-4: #2E2E2E;
+    --cream: #F7F2EA;
+    --text-dim: rgba(255, 255, 255, 0.45);
+    --text-mid: rgba(255, 255, 255, 0.72);
+    --text-soft: rgba(255, 255, 255, 0.68);
+    --error: #E26060;
+    --tui-font-text-s: 14px;
+    --transition-duration: 800ms;
+
+    /* Dashboard */
+    /* ================= PRIMARY ================= */
+    --das-primary-frost: #F0F6FF;
+    --das-primary-ice: #DAEEFF;
+    --das-primary-mist: #B5D4F4;
+    --das-primary-sky: #85B7EB;
+    --das-primary-ocean: #378ADD;
+    --das-primary-deep: #185FA5;
+    --das-primary-abyss: #042C53;
+
+    /* ================= NEUTRAL ================= */
+    --das-neutral-white: #FFFFFF;
+    --das-neutral-canvas: #F8FAFC;
+    --das-neutral-cloud: #EDF1F7;
+    --das-neutral-silver: #C8D6E8;
+    --das-neutral-steel: #8FA8C4;
+    --das-neutral-slate: #4A6580;
+    --das-neutral-ink: #1C2F42;
+
+    /* ================= SEMANTIC ================= */
+    --das-semantic-success-bg: #E8F7EF;
+    --das-semantic-success: #1D9E75;
+    --das-semantic-warning-bg: #FFF8E6;
+    --das-semantic-warning: #EF9F27;
+    --das-semantic-danger-bg: #FDECEA;
+    --das-semantic-danger: #E24B4A;
+    --das-semantic-info-bg: #E6F1FB;
+
+    /* ================= ROLES ================= */
+    --das-role-canvas: #F8FAFC;
+    --das-role-card: #FFFFFF;
+    --das-role-primary-action: #185FA5;
+    --das-role-highlight: #E6F1FB;
+    --das-role-sidebar-header: #042C53;
+    --das-role-text-primary: #1C2F42;
+    --das-role-text-secondary: #4A6580;
+    --das-role-border: #C8D6E8;
+
+    /* ================= BADGES ================= */
+    --das-badge-available-bg: #E8F7EF;
+    --das-badge-available-text: #085041;
+
+    --das-badge-booked-bg: #E6F1FB;
+    --das-badge-booked-text: #0C447C;
+
+    --das-badge-cleaning-bg: #FDECEA;
+    --das-badge-cleaning-text: #791F1F;
+
+    --das-badge-maintenance-bg: #FFF8E6;
+    --das-badge-maintenance-text: #633806;
+
+    --das-badge-checkin-bg: #DAEEFF;
+    --das-badge-checkin-text: #042C53;
+
+    --das-badge-inactive-bg: #EDF1F7;
+    --das-badge-inactive-text: #4A6580;
+
+    /* ================= CARDS ================= */
+    /* Tổng phòng */
+    --das-card-total-header-bg: #042C53;
+    --das-card-total-header-text: #B5D4F4;
+    --das-card-total-body-bg: #F0F6FF;
+    --das-card-total-body-text: #1C2F42;
+    --das-card-total-sub-text: #4A6580;
+
+    /* Check-in hôm nay */
+    --das-card-checkin-header-bg: #185FA5;
+    --das-card-checkin-header-text: #E6F1FB;
+    --das-card-checkin-body-bg: #F0F6FF;
+    --das-card-checkin-body-text: #1C2F42;
+    --das-card-checkin-sub-text: #4A6580;
+
+    /* Doanh thu */
+    --das-card-revenue-header-bg: #0C447C;
+    --das-card-revenue-header-text: #B5D4F4;
+    --das-card-revenue-body-bg: #F0F6FF;
+    --das-card-revenue-body-text: #1C2F42;
+    --das-card-revenue-sub-text: #4A6580;
+
+    /* AG-Grid */
+    --ag-header-column-resize-handle-color: #fff;
+}
+
+.tui-text_body-s {
+    font-size: var(--tui-font-text-s);
+}
+
+.success-message {
+    color: green;
+    font-size: 14px;
+}
+
+.error-message {
+    color: var(--error);
+    font-size: 14px;
+}
+
+.no-result {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark-4) !important;
+    font-size: 18px !important;
+    text-align: center;
+    margin-top: 20px;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+
+}
+
+
+::view-transition-old(root) {
+    animation: vt-fade-out var(--transition-duration) ease-in forwards;
+}
+
+
+::view-transition-new(root) {
+    animation: vt-fade-in var(--transition-duration) ease-out forwards;
+}
+
+
+@keyframes vt-fade-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes vt-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.table-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.table-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* BookingStatus */
+.status-pending-payment {
+    background: var(--das-semantic-warning-bg);
+    color: #633806;
+}
+
+.status-pending-payment::before {
+    background: var(--das-semantic-warning);
+}
+
+.status-confirmed {
+    background: var(--das-semantic-success-bg);
+    color: var(--das-badge-available-text);
+}
+
+.status-confirmed::before {
+    background: var(--das-semantic-success);
+}
+
+.status-check-in {
+    background: var(--das-badge-checkin-bg);
+    color: var(--das-badge-checkin-text);
+}
+
+.status-check-in::before {
+    background: var(--das-role-primary-action);
+}
+
+.status-check-out {
+    background: var(--das-semantic-info-bg);
+    color: var(--das-badge-booked-text);
+}
+
+.status-check-out::before {
+    background: #378ADD;
+}
+
+.status-cancelled {
+    background: var(--das-semantic-danger-bg);
+    color: var(--das-badge-cleaning-text);
+}
+
+.status-cancelled::before {
+    background: var(--das-semantic-danger);
+}
+
+.status-expired {
+    background: var(--das-badge-inactive-bg);
+    color: var(--das-badge-inactive-text);
+}
+
+.status-expired::before {
+    background: #8A9DB3;
+}
+
+/* BookingPaymentStatus */
+.payment-unpaid {
+    background: var(--das-semantic-danger-bg);
+    color: var(--das-badge-cleaning-text);
+}
+
+.payment-unpaid::before {
+    background: var(--das-semantic-danger);
+}
+
+.payment-partial {
+    background: var(--das-semantic-warning-bg);
+    color: var(--das-badge-maintenance-text);
+}
+
+.payment-partial::before {
+    background: var(--das-semantic-warning);
+}
+
+.payment-paid {
+    background: var(--das-semantic-success-bg);
+    color: var(--das-badge-available-text);
+}
+
+.payment-paid::before {
+    background: var(--das-semantic-success);
+}
+
+.payment-refunded {
+    background: var(--das-semantic-info-bg);
+    color: var(--das-badge-booked-text);
+}
+
+.payment-refunded::before {
+    background: var(--das-role-primary-action);
+}
+
+
+/* PaymentStatus */
+.pay-pending {
+    background: var(--das-semantic-warning-bg);
+    color: var(--das-badge-maintenance-text);
+}
+
+.pay-pending::before {
+    background: var(--das-semantic-warning);
+}
+
+.pay-success {
+    background: var(--das-semantic-success-bg);
+    color: var(--das-badge-available-text);
+}
+
+.pay-success::before {
+    background: var(--das-semantic-success);
+}
+
+.pay-failed {
+    background: var(--das-semantic-danger-bg);
+    color: var(--das-badge-cleaning-text);
+}
+
+.pay-failed::before {
+    background: var(--das-semantic-danger);
+}
+
+.cus-scroll {
+    overflow-y: auto;
+}
+
+.cus-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.cus-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cus-scroll::-webkit-scrollbar-thumb {
+    background-color: var(--das-role-border, #C8D6E8);
+    border-radius: 20px;
+    border: 2px solid transparent;
+}

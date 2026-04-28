@@ -1,0 +1,50 @@
+<div class="payment-section">
+    <div class="payment-card">
+        <div class="row g-0 h-100">
+
+            <!-- Phần 1: Ảnh theo trạng thái (Success / Error) -->
+            <div class="col-md-6 image-wrapper">
+                @if (isSuccess()) {
+                <img src="assets/images/payment-success.png" alt="" />
+                } @else {
+                <img src="assets/images/payment-error.png" alt="" />
+                }
+            </div>
+
+            <!-- Phần 2: Nội dung & Nút bấm -->
+            <div class="col-md-6 content-wrapper">
+                <div class="text-center">
+
+                    @if (isSuccess()) {
+                    <div class="status-icon success">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h2 class="status-title">Thanh toán thành công</h2>
+                    <p class="status-desc">
+                        Cảm ơn bạn! Booking của bạn đã được xác nhận. Chúng tôi rất mong được đón tiếp bạn.
+                    </p>
+                    } @else {
+                    <div class="status-icon error">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h2 class="status-title">Thanh toán thất bại</h2>
+                    <p class="status-desc">
+                        Rất tiếc, đã có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.
+                    </p>
+                    }
+
+                    <div class="action-buttons d-flex flex-column gap-3 mt-4">
+                        <button class="btn btn-dark w-100" (click)="goToHome()">
+                            Về trang chủ
+                        </button>
+                        <button class="btn btn-outline-secondary w-100" (click)="goToBookingHistory()">
+                            Xem lịch sử đặt phòng
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

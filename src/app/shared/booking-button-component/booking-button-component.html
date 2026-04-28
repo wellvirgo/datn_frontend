@@ -1,0 +1,49 @@
+<div class="side-booking-btn-wrapper" #bookingButton [class.isSticky]="isSticky()">
+    <button class="booking-btn" [class.open]="isBookingPopupOpen()" (click)="toggleBookingPopup()">
+        @if (isBookingPopupOpen()) {
+        <div class="booking-btn-icon">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+        <span class="booking-btn-text">Đóng</span>
+        }@else {
+        <div class="booking-btn-icon">
+            <i class="fa-solid fa-calendar-days"></i>
+        </div>
+        <span class="booking-btn-text">Đặt phòng</span>
+        }
+    </button>
+</div>
+
+<div class="booking-popup" [class.open]="isBookingPopupOpen()">
+    <div class="d-flex flex-column booking-popup-content">
+        <div class="booking-popup-header">
+            <h3 class="booking-popup-title text-center">Đặt phòng ngay</h3>
+            <p class="booking-popup-sub-title text-center">Chọn ngày để bắt đầu đặt phòng.</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="date-picker col-4">
+                <tui-textfield class="custom-datepicker" [disabledItemHandler]="checkInHandler"
+                    [tuiTextfieldCleaner]="false">
+                    <label tuiLabel class="text-center">Ngày nhận phòng</label>
+                    <input tuiInputDate [max]="maxCheckIn" [min]="minCheckIn" [(ngModel)]="checkIn"
+                        (ngModelChange)="onCheckInChange($event)" class="text-center">
+                    <tui-calendar *tuiTextfieldDropdown></tui-calendar>
+                </tui-textfield>
+            </div>
+            <div class="date-picker col-4">
+                <tui-textfield class="custom-datepicker" [disabledItemHandler]="checkOutHandler"
+                    [tuiTextfieldCleaner]="false">
+                    <label tuiLabel class="text-center">Ngày trả phòng</label>
+                    <input tuiInputDate [max]="maxCheckOut" [min]="minCheckOut" [(ngModel)]="checkOut"
+                        class="text-center">
+                    <tui-calendar *tuiTextfieldDropdown></tui-calendar>
+                </tui-textfield>
+            </div>
+        </div>
+        <div class="booking-popup-button">
+            <button type="button" class="check-btn" (click)="searchAvailability()">
+                Tìm phòng
+            </button>
+        </div>
+    </div>
+</div>

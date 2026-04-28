@@ -1,0 +1,262 @@
+<div class="das-user-layout">
+    <div class="das-user-container">
+        <div class="header-actions">
+            <div class="header-title-row">
+                <h2 style="margin: 0; color: var(--das-role-text-primary, #1C2F42); font-size: 20px; font-weight: 600;">
+                    Quản lý người dùng</h2>
+                <button class="btn-primary" (click)="openCreateUserModal()">
+                    <i class="fa-solid fa-plus"></i> Tạo mới người dùng
+                </button>
+            </div>
+
+            <div class="filters-grid" style="margin-top: 24px;">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="search-box">
+                        <i class="fa-regular fa-envelope search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Nhập email..."
+                            [ngModel]="inputEmailFilter()" (ngModelChange)="onEmailChange($event)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Vai trò</label>
+                    <div class="custom-select-wrapper">
+                        <select class="custom-select form-control" [ngModel]="inputRoleFilter()"
+                            (ngModelChange)="inputRoleFilter.set($event); currentPage.set(1)">
+                            <option value="">Tất cả</option>
+                            <option value="CUSTOMER">Khách hàng</option>
+                            <option value="RECEPTIONIST">Lễ tân</option>
+                            <option value="MANAGER">Quản lý</option>
+                            <option value="SYSADMIN">Quản trị hệ thống</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down custom-select-arrow"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Trạng thái hoạt động</label>
+                    <div class="custom-select-wrapper">
+                        <select class="custom-select form-control" [ngModel]="inputStatusFilter()"
+                            (ngModelChange)="inputStatusFilter.set($event); currentPage.set(1)">
+                            <option [ngValue]="null">Tất cả</option>
+                            <option [ngValue]="true">Đang hoạt động</option>
+                            <option [ngValue]="false">Đã khóa</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down custom-select-arrow"></i>
+                    </div>
+                </div>
+
+                <div class="form-action">
+                    <button class="btn-clear" (click)="clearFilters()" title="Xóa bộ lọc">
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="das-user-content">
+            <ag-grid-angular class="das-user-table" [columnDefs]="colDefs" [rowData]="usersResource.value()?.items"
+                [loading]="usersResource.isLoading()" [theme]="theme" [defaultColDef]="defaultColDef"
+                [enableCellTextSelection]="true">
+            </ag-grid-angular>
+        </div>
+
+        <ng-template #deleteConfirmDialog let-observer>
+            <div class="d-flex justify-content-center">
+                <div class="delete-dialog">
+                    <div class="dialog-icon">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+
+                    <h2 class="dialog-title">Xóa người dùng này?</h2>
+
+                    <p class="dialog-desc">
+                        Hành động này sẽ xóa người dùng này khỏi danh sách hoạt động.
+                    </p>
+
+                    <div class="dialog-warning">
+                        <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
+                        <span>Thao tác này không thể hoàn tác.</span>
+                    </div>
+
+                    <div class="dialog-actions">
+                        <button type="button" class="dialog-btn dialog-btn-cancel" (click)="observer.complete()">
+                            Hủy bỏ
+                        </button>
+                        <button type="button" class="dialog-btn dialog-btn-danger"
+                            (click)="observer.next(true); observer.complete()">
+                            <i class="fa-solid fa-trash-can"></i> Xóa ngay
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <app-pagination-component [currentPage]="currentPage()" [totalPages]="usersResource.value()?.totalPages ?? 0"
+            [totalItems]="usersResource.value()?.total ?? 0"
+            (nextPage)="currentPage.set($event)"></app-pagination-component>
+    </div>
+
+    <!-- Create User Modal -->
+    <div class="modal-overlay" [class.show]="isCreateModalOpen()">
+        <div class="modal-centered">
+            <div class="modal-header">
+                <h3 class="modal-title">Tạo mới người dùng</h3>
+                <button class="close-btn" (click)="closeCreateModal()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+
+            <form [formGroup]="createUserForm" (ngSubmit)="submitCreateUser()" class="modal-body cus-scroll">
+                <div class="form-group row-group">
+                    <label>Tên người dùng <span class="required">*</span></label>
+                    <input type="text" formControlName="fullName" class="form-control" placeholder="Nhập tên người dùng"
+                        [class.is-invalid]="createUserForm.get('fullName')?.invalid && (createUserForm.get('fullName')?.dirty || createUserForm.get('fullName')?.touched)">
+                    @if (createUserForm.get('fullName')?.invalid && (createUserForm.get('fullName')?.dirty ||
+                    createUserForm.get('fullName')?.touched)) {
+                    <div class="error-message">
+                        @if (createUserForm.get('fullName')?.errors?.['required']) {
+                        <span>Tên không được để trống</span>
+                        }
+                        @if (createUserForm.get('fullName')?.errors?.['maxlength']) {
+                        <span>Tên không được vượt quá 255 ký tự</span>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <div class="form-group row-group">
+                    <label>Email <span class="required">*</span></label>
+                    <input type="email" formControlName="email" class="form-control" placeholder="Nhập email"
+                        [class.is-invalid]="createUserForm.get('email')?.invalid && (createUserForm.get('email')?.dirty || createUserForm.get('email')?.touched)">
+                    @if (createUserForm.get('email')?.invalid && (createUserForm.get('email')?.dirty ||
+                    createUserForm.get('email')?.touched)) {
+                    <div class="error-message">
+                        @if (createUserForm.get('email')?.errors?.['required']) {
+                        <span>Email không được để trống</span>
+                        }
+                        @if (createUserForm.get('email')?.errors?.['email']) {
+                        <span>Email không đúng định dạng</span>
+                        }
+                        @if (createUserForm.get('email')?.errors?.['maxlength']) {
+                        <span>Email không được vượt quá 255 ký tự</span>
+                        }
+                        @if (createUserForm.get('email')?.errors?.['duplicate']) {
+                        <span>Email đã tồn tại</span>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <div class="form-group row-group">
+                    <label>Mật khẩu <span class="required">*</span></label>
+                    <input type="password" formControlName="password" class="form-control" placeholder="Nhập mật khẩu"
+                        [class.is-invalid]="createUserForm.get('password')?.invalid && (createUserForm.get('password')?.dirty || createUserForm.get('password')?.touched)">
+                    @if (createUserForm.get('password')?.invalid && (createUserForm.get('password')?.dirty ||
+                    createUserForm.get('password')?.touched)) {
+                    <div class="error-message">
+                        @if (createUserForm.get('password')?.errors?.['required']) {
+                        <span>Yêu cầu nhập mật khẩu</span>
+                        }
+                        @if (createUserForm.get('password')?.errors?.['maxlength']) {
+                        <span>Mật khẩu không được vượt quá 255 ký tự</span>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <div class="form-group row-group">
+                    <label>Vai trò <span class="required">*</span></label>
+                    <div class="custom-select-wrapper">
+                        <select formControlName="role" class="custom-select form-control"
+                            [class.is-invalid]="createUserForm.get('role')?.invalid && (createUserForm.get('role')?.dirty || createUserForm.get('role')?.touched)">
+                            <option value="" disabled selected>Chọn vai trò</option>
+                            <option value="CUSTOMER">Khách hàng</option>
+                            <option value="RECEPTIONIST">Lễ tân</option>
+                            <option value="MANAGER">Quản lý</option>
+                            <option value="SYSADMIN">Quản trị hệ thống</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down custom-select-arrow" style="right: 14px;"></i>
+                    </div>
+                    @if (createUserForm.get('role')?.invalid && (createUserForm.get('role')?.dirty ||
+                    createUserForm.get('role')?.touched)) {
+                    <div class="error-message">
+                        @if (createUserForm.get('role')?.errors?.['required']) {
+                        <span>Phải chỉ định role cho user</span>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" (click)="closeCreateModal()">Hủy</button>
+                    <button type="submit" class="btn-submit">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View User Modal -->
+    <div class="modal-overlay" [class.show]="isDetailModalOpen()">
+        <div class="modal-centered">
+
+            <div class="modal-header">
+                <h3 class="modal-title">Chi tiết người dùng</h3>
+                <button class="close-btn" (click)="closeDetailModal()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body cus-scroll">
+                <div class="avatar-section">
+                    @if (selectedUser()?.avatarUrl) {
+                    <img class="avatar-img" [src]="selectedUser()?.avatarUrl" [alt]="selectedUser()?.fullName" />
+                    } @else {
+                    <div class="avatar-initials">{{ getInitials(selectedUser()?.fullName) }}</div>
+                    }
+                    <span class="detail-username">{{ selectedUser()?.fullName }}</span>
+                    <span class="role-badge" [ngClass]="'role-' + selectedUser()?.role">
+                        {{ getRoleLabel(selectedUser()?.role) }}
+                    </span>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item full">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value">{{ selectedUser()?.email }}</span>
+                    </div>
+
+                    <div class="detail-item full">
+                        <span class="detail-label">Trạng thái</span>
+                        <span class="detail-value">
+                            <span class="status-dot"
+                                [ngClass]="selectedUser()?.active ? 'status-active' : 'status-inactive'"></span>
+                            {{ selectedUser()?.active ? 'Đang hoạt động' : 'Đã khóa' }}
+                        </span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Ngày tạo</span>
+                        <span class="detail-value">{{ selectedUser()?.createdAt | date:'dd/MM/yyyy' }}</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Cập nhật lần cuối</span>
+                        <span class="detail-value">
+                            {{ (selectedUser()?.updateAt | date:'dd/MM/yyyy') ?? 'Chưa cập nhật'}}
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" (click)="closeDetailModal()">Đóng</button>
+                <!-- <button type="button" class="btn-submit" (click)="openEditModal(selectedUser)">Chỉnh sửa</button> -->
+            </div>
+
+        </div>
+    </div>
+
+</div>

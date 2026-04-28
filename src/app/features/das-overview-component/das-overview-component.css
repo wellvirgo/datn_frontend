@@ -1,0 +1,255 @@
+.das-overview-container {
+    background-color: var(--das-neutral-canvas);
+    font-family: 'Inter', sans-serif;
+}
+
+.das-overview-content {
+    padding: 24px;
+}
+
+.das-stat-card {
+    border: 1px solid var(--das-role-border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--das-role-card);
+    box-shadow: 0 4px 20px rgba(28, 47, 66, 0.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.das-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(28, 47, 66, 0.08);
+}
+
+.stat-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.stat-body {
+    padding: 24px 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.stat-subtext {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+}
+
+/* Card 1: Phòng đã đặt */
+.card-booked .stat-header {
+    background-color: var(--das-card-total-header-bg);
+    color: var(--das-card-total-header-text);
+    border-bottom: none;
+}
+
+.card-booked .stat-body {
+    background-color: var(--das-neutral-white);
+    color: var(--das-card-total-body-text);
+}
+
+.card-booked .stat-subtext {
+    color: var(--das-card-total-sub-text);
+}
+
+.card-booked .stat-icon {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--das-neutral-white);
+}
+
+/* Card 2: Check-in */
+.card-checkin .stat-header {
+    background-color: var(--das-primary-ocean);
+    color: var(--das-neutral-white);
+    border-bottom: none;
+}
+
+.card-checkin .stat-body {
+    background-color: var(--das-neutral-white);
+    color: var(--das-card-checkin-body-text);
+}
+
+.card-checkin .stat-subtext {
+    color: var(--das-card-checkin-sub-text);
+}
+
+.card-checkin .stat-icon {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--das-neutral-white);
+}
+
+/* Card 3: Doanh thu */
+.card-revenue .stat-header {
+    background-color: var(--das-neutral-white);
+    color: var(--das-role-text-primary);
+}
+
+.card-revenue .stat-body {
+    background-color: var(--das-neutral-white);
+    color: var(--das-card-revenue-body-text);
+}
+
+.card-revenue .stat-subtext {
+    color: var(--das-card-revenue-sub-text);
+}
+
+.card-revenue .stat-icon {
+    background-color: var(--das-semantic-success-bg);
+    color: var(--das-semantic-success);
+}
+
+/* Card 4: Công suất */
+.card-occupancy .stat-header {
+    background-color: var(--das-neutral-white);
+    color: var(--das-role-text-primary);
+}
+
+.card-occupancy .stat-body {
+    background-color: var(--das-neutral-white);
+    color: var(--das-role-text-primary);
+}
+
+.card-occupancy .stat-icon {
+    background-color: var(--das-primary-ice);
+    color: var(--das-primary-deep);
+}
+
+/* Utilities inside cards */
+.badge-pending {
+    background-color: var(--das-semantic-warning-bg);
+    color: var(--das-semantic-warning);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 2px;
+}
+
+.text-success {
+    color: var(--das-semantic-success) !important;
+}
+
+.text-danger {
+    color: var(--das-semantic-danger) !important;
+}
+
+/* Clock Widget */
+.das-clock-card {
+    background: linear-gradient(135deg, var(--das-primary-deep), var(--das-primary-abyss));
+    border-radius: 20px;
+    padding: 32px 24px;
+    color: var(--das-neutral-white);
+    text-align: center;
+    height: 100%;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 40px rgba(4, 44, 83, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.das-clock-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    animation: rotate 40s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.clock-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+
+.clock-label {
+    font-size: 20px;
+    color: var(--das-primary-ice);
+    font-weight: 500;
+}
+
+.clock-time {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    font-variant-numeric: tabular-nums;
+}
+
+.clock-date {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--das-primary-ice);
+    text-transform: capitalize;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+}
+
+.das-dashboard-row {
+    margin: 0 -12px;
+}
+
+.das-dashboard-row>[class*="col-"] {
+    padding: 0 12px;
+}

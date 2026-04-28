@@ -1,0 +1,163 @@
+<div class="das-overview-container">
+    <div class="das-overview-content flex-grow-1">
+        <div class="row das-dashboard-row">
+        <!-- Dashboard Stats -->
+        <div class="col-lg-8">
+            <div class="row">
+                <!-- Phòng đã đặt -->
+                <div class="col-sm-6 mb-4">
+                    <div class="das-stat-card card-booked">
+                        <div class="stat-header">
+                            <span>Phòng đã đặt</span>
+                            <div class="stat-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 4v16" />
+                                    <path d="M2 8h18a2 2 0 0 1 2 2v10" />
+                                    <path d="M2 17h20" />
+                                    <path d="M6 8v9" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">
+                                {{overview.value()?.bookedTodayCount}}
+                                <span style="font-size: 20px; font-weight: 500; color: var(--das-card-total-sub-text)">/
+                                    {{overview.value()?.totalRoomsToday}}</span>
+                            </div>
+                            <div class="stat-subtext">
+                                @if((overview.value()?.diffBookedVsYesterday ?? 0) >= 0){
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-success"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 19V5" />
+                                    <path d="m5 12 7-7 7 7" />
+                                </svg>
+                                }@else {
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-danger"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 5v14" />
+                                    <path d="m19 12-7 7-7-7" />
+                                </svg>
+                                }
+                                <span>{{overview.value()?.diffBookedVsYesterday}} so với hôm qua</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Check-in hôm nay -->
+                <div class="col-sm-6 mb-4">
+                    <div class="das-stat-card card-checkin">
+                        <div class="stat-header">
+                            <span>Check-in hôm nay</span>
+                            <div class="stat-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                    <polyline points="10 17 15 12 10 7" />
+                                    <line x1="15" y1="12" x2="3" y2="12" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">
+                                {{overview.value()?.totalCheckIn}}
+                            </div>
+                            <div class="stat-subtext">
+                                <span class="badge-pending">{{overview.value()?.pendingCheckIn}} chờ check-in</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doanh thu hôm nay -->
+                <div class="col-sm-6 mb-4">
+                    <div class="das-stat-card card-revenue">
+                        <div class="stat-header">
+                            <span>Doanh thu hôm nay</span>
+                            <div class="stat-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                                    <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                                    <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">
+                                {{overview.value()?.todayRevenue | currency:'VND'}}
+                            </div>
+                            <div class="stat-subtext">
+                                @if((overview.value()?.diffRevenueVsLastWeekPercentage ?? 0) >= 0){
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-success"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 19V5" />
+                                    <path d="m5 12 7-7 7 7" />
+                                </svg>
+                                }@else {
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-danger"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 5v14" />
+                                    <path d="m19 12-7 7-7-7" />
+                                </svg>
+                                }
+                                <span>{{overview.value()?.diffRevenueVsLastWeekPercentage}}% so với tuần trước</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Công suất phòng -->
+                <div class="col-sm-6 mb-4">
+                    <div class="das-stat-card card-occupancy">
+                        <div class="stat-header">
+                            <span>Công suất phòng</span>
+                            <div class="stat-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                                    <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">
+                                {{overview.value()?.roomOccupancyPercentage}}%
+                            </div>
+                            <div class="stat-subtext mt-1">
+                                <span class="status-indicator"
+                                    [style.backgroundColor]="overview.value()?.occupancyStatusColor"></span>
+                                <span [style.color]="overview.value()?.occupancyStatusColor" style="font-weight: 500;">
+                                    {{overview.value()?.occupancyStatusLabel}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clock -->
+        <div class="col-lg-4 mb-4">
+            <div class="das-clock-card">
+                <div class="clock-content">
+                    <div class="text-center clock-label">
+                        Thời gian hiện tại
+                    </div>
+                    <div class="clock-time">
+                        {{formattedTime.time}}
+                    </div>
+                    <div class="clock-date">
+                        {{formattedDate}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

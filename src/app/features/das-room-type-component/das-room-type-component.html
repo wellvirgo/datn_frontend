@@ -1,0 +1,1108 @@
+<div class="das-room-type-layout cus-scroll">
+  <div class="das-room-type-container">
+    <div class="header-actions">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" class="search-input" placeholder="Tìm kiếm theo tên phòng..." [ngModel]="searchQuery()"
+          (ngModelChange)="updateSearch($event)">
+      </div>
+      @if(authService.isAdmin() || authService.isManager()){
+      <button class="btn-primary" (click)="openModal()">
+        <i class="fa-solid fa-plus"></i> Thêm loại phòng mới
+      </button>
+      }
+    </div>
+
+    <div class="room-grid">
+      @if (roomsResource.isLoading()) {
+      <!-- Skeleton loading cards -->
+      @for (i of [1,2,3,4,5,6]; track i) {
+      <div class="room-card skeleton-card">
+        <div class="card-thumbnail skeleton-pulse"></div>
+        <div class="card-content">
+          <div class="skeleton-line skeleton-title skeleton-pulse"></div>
+          <div class="skeleton-line skeleton-text skeleton-pulse"></div>
+          <div class="skeleton-line skeleton-text short skeleton-pulse"></div>
+          <div class="skeleton-specs">
+            <div class="skeleton-line skeleton-spec skeleton-pulse"></div>
+            <div class="skeleton-line skeleton-spec skeleton-pulse"></div>
+            <div class="skeleton-line skeleton-spec skeleton-pulse"></div>
+            <div class="skeleton-line skeleton-spec skeleton-pulse"></div>
+          </div>
+        </div>
+        <div class="card-footer skeleton-footer">
+          <div class="skeleton-line skeleton-btn skeleton-pulse"></div>
+          <div class="skeleton-line skeleton-btn skeleton-pulse"></div>
+        </div>
+      </div>
+      }
+      } @else {
+      @for (room of paginatedRooms(); track room.id) {
+      <div class="room-card">
+        <div class="card-thumbnail" [style.backgroundImage]="'url(' + (room.thumbnail | roomTypeFallbackImg) + ')'">
+          <div class="price-badge">{{room.basePrice | currency: 'VND'}}<span class="per-night">/đêm</span></div>
+        </div>
+        <div class="card-content">
+          <h3 class="room-name" (click)="openViewModal(room.id)" style="cursor: pointer;" title="Xem chi tiết">
+            {{room.name}}</h3>
+          <p class="room-description">{{room.description}}</p>
+
+          <div class="room-specs">
+            <div class="spec-item" title="Sức chứa tối đa">
+              <i class="fa-solid fa-users"></i> {{room.maxOccupancy}} Khách ({{room.maxAdults}} người lớn,
+              {{room.maxChildren}} trẻ em)
+            </div>
+            <div class="spec-item" title="Diện tích">
+              <i class="fa-solid fa-ruler-combined"></i> {{room.areaSize}} m²
+            </div>
+            <div class="spec-item" title="Loại giường">
+              <i class="fa-solid fa-bed"></i> {{room.bedTypeName}}
+            </div>
+            <div class="spec-item" title="View">
+              <i class="fa-solid fa-tree"></i> View {{room.viewType}}
+            </div>
+          </div>
+        </div>
+        @if(authService.isAdmin() || authService.isManager()){
+        <div class="card-footer">
+          <button class="btn-outline" (click)="openEditModal(room.id)">Chỉnh sửa</button>
+          <button type="button" class="btn-text text-danger" (click)="deleteRoomType(room.id, room.name)">Xóa</button>
+          <ng-template #deleteConfirmDialog let-observer>
+            <div class="d-flex justify-content-center">
+              <div class="delete-dialog">
+                <div class="dialog-icon">
+                  <i class="fa-solid fa-trash-can"></i>
+                </div>
+
+                <h2 class="dialog-title">Xóa loại phòng "{{room.name}}"?</h2>
+
+                <p class="dialog-desc">
+                  Hành động này sẽ xóa loại phòng này khỏi danh sách hoạt động.
+                </p>
+
+                <div class="dialog-warning">
+                  <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
+                  <span>Thao tác này không thể hoàn tác.</span>
+                </div>
+
+                <div class="dialog-actions">
+                  <button type="button" class="dialog-btn dialog-btn-cancel" (click)="observer.complete()">
+                    Hủy bỏ
+                  </button>
+                  <button type="button" class="dialog-btn dialog-btn-danger"
+                    (click)="observer.next(true); observer.complete()">
+                    <i class="fa-solid fa-trash-can"></i> Xóa ngay
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+        }
+      </div>
+      }
+      @empty {
+      <div class="empty-state">
+        <i class="fa-solid fa-box-open empty-icon"></i>
+        <p>Không tìm thấy loại phòng nào phù hợp.</p>
+      </div>
+      }
+      }
+    </div>
+
+    @if (totalPages() > 1) {
+    <div class="pagination-container">
+      <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+
+      @for (page of getPagesArray(); track page) {
+      <button class="page-btn" [class.active]="currentPage() === page" (click)="goToPage(page)">
+        {{page}}
+      </button>
+      }
+
+      <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Create Modal -->
+<div class="modal-overlay" [class.show]="isCreateModalOpen()">
+  <div class="modal-container" [class.slide-in]="isCreateModalOpen()">
+    <div class="modal-header">
+      <h2 class="modal-title">Thêm Loại Phòng Mới</h2>
+      <button class="close-btn" (click)="closeModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="roomTypeForm" (ngSubmit)="submitForm()" class="flex-grow-1 form">
+      <div class="modal-body">
+        <!-- Tabs Sidebar -->
+        <div class="modal-tabs">
+          @for (tab of tabs; track tab.id) {
+          <button type="button" class="tab-btn" [class.active]="activeTab() === tab.id"
+            [class.tab-error]="isTabInvalid(tab.id)" (click)="setTab(tab.id)">
+            <i class="fa-solid {{tab.icon}}"></i>
+            {{tab.title}}
+            @if (isTabInvalid(tab.id)) {
+            <span class="tab-error-dot"></span>
+            }
+          </button>
+          }
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="modal-content-area cus-scroll">
+          <!-- Tab 0: Thông tin cơ bản -->
+          @if (activeTab() === 0) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Thông tin cơ bản</h3>
+            <div class="form-group">
+              <label>Tên loại phòng<span class="required">*</span></label>
+              <input type="text" class="form-control" formControlName="name" [class.is-invalid]="isFieldInvalid('name')"
+                placeholder="VD: Deluxe Ocean View">
+              @if (isFieldInvalid('name')) {
+              <div class="invalid-feedback">{{getErrorMessage('name')}}</div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Loại không gian/tầm nhìn</label>
+              <input type="text" class="form-control" formControlName="viewType"
+                [class.is-invalid]="isFieldInvalid('viewType')" placeholder="VD: Sea View, City View">
+              @if (isFieldInvalid('viewType')) {
+              <div class="invalid-feedback">{{getErrorMessage('viewType')}}</div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Tổng số phòng<span class="required">*</span></label>
+              <input type="number" class="form-control" formControlName="totalRooms"
+                [class.is-invalid]="isFieldInvalid('totalRooms')" placeholder="VD: 10">
+              @if (isFieldInvalid('totalRooms')) {
+              <div class="invalid-feedback">{{getErrorMessage('totalRooms')}}</div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Mô tả</label>
+              <textarea class="form-control" rows="5" formControlName="description"
+                [class.is-invalid]="isFieldInvalid('description')"
+                placeholder="Viết mô tả chi tiết về loại phòng..."></textarea>
+              @if (isFieldInvalid('description')) {
+              <div class="invalid-feedback">{{getErrorMessage('description')}}</div>
+              }
+            </div>
+          </div>
+          }
+
+          <!-- Tab 1: Sức chứa & Giá -->
+          @if (activeTab() === 1) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Sức chứa & Giá</h3>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Người lớn tiêu chuẩn<span class="required">*</span></label>
+                <input type="number" class="form-control" formControlName="baseAdults"
+                  [class.is-invalid]="isFieldInvalid('baseAdults')">
+                @if (isFieldInvalid('baseAdults')) {
+                <div class="invalid-feedback">{{getErrorMessage('baseAdults')}}</div>
+                }
+              </div>
+              <div class="form-group">
+                <label>Trẻ em tiêu chuẩn<span class="required">*</span></label>
+                <input type="number" class="form-control" formControlName="baseChildren"
+                  [class.is-invalid]="isFieldInvalid('baseChildren')">
+                @if (isFieldInvalid('baseChildren')) {
+                <div class="invalid-feedback">{{getErrorMessage('baseChildren')}}</div>
+                }
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Tối đa người lớn<span class="required">*</span></label>
+                <input type="number" class="form-control" formControlName="maxAdults"
+                  [class.is-invalid]="isFieldInvalid('maxAdults')" [min]="roomTypeForm.get('baseAdults')!.value || 1">
+                @if (isFieldInvalid('maxAdults')) {
+                <div class="invalid-feedback">{{getErrorMessage('maxAdults')}}</div>
+                }
+              </div>
+              <div class="form-group">
+                <label>Tối đa trẻ em<span class="required">*</span></label>
+                <input type="number" class="form-control" formControlName="maxChildren"
+                  [class.is-invalid]="isFieldInvalid('maxChildren')"
+                  [min]="roomTypeForm.get('baseChildren')!.value || 0">
+                @if (isFieldInvalid('maxChildren')) {
+                <div class="invalid-feedback">{{getErrorMessage('maxChildren')}}</div>
+                }
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Giá cơ bản/đêm (VND)<span class="required">*</span></label>
+              <input type="text" class="form-control" [value]="basePriceDisplay()"
+                (input)="onPriceInput($event, 'basePrice')" [class.is-invalid]="isFieldInvalid('basePrice')"
+                placeholder="VD: 500,000" inputmode="numeric">
+              @if (isFieldInvalid('basePrice')) {
+              <div class="invalid-feedback">{{getErrorMessage('basePrice')}}</div>
+              }
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="extraBedAllowed">
+                  <span>Cho phép kê thêm giường phụ</span>
+                </label>
+              </div>
+              <div class="form-group" [class.field-disabled]="!roomTypeForm.get('extraBedAllowed')!.value">
+                <label>Giá giường phụ (VND)
+                  @if (roomTypeForm.get('extraBedAllowed')!.value) {
+                  <span class="required">*</span>
+                  }
+                </label>
+                <input type="text" class="form-control" [value]="extraBedPriceDisplay()"
+                  (input)="onPriceInput($event, 'extraBedPrice')" [class.is-invalid]="isFieldInvalid('extraBedPrice')"
+                  placeholder="Nhập giá giường phụ..." inputmode="numeric">
+                @if (isFieldInvalid('extraBedPrice')) {
+                <div class="invalid-feedback">{{getErrorMessage('extraBedPrice')}}</div>
+                }
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- Tab 2: Giường & Không gian -->
+          @if (activeTab() === 2) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Không gian & Giường</h3>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Loại giường<span class="required">*</span></label>
+                <div class="custom-select-wrapper">
+                  <select class="form-control custom-select" formControlName="bedTypeId"
+                    [class.is-invalid]="isFieldInvalid('bedTypeId')">
+                    <option value="" disabled>Chọn loại giường...</option>
+                    @for (bed of bedTypes(); track bed.id) {
+                    <option [ngValue]="bed.id">{{bed.code}} - {{bed.name}}</option>
+                    }
+                  </select>
+                  <i class="fa-solid fa-chevron-down custom-select-arrow"></i>
+                </div>
+                @if (isFieldInvalid('bedTypeId')) {
+                <div class="invalid-feedback">{{getErrorMessage('bedTypeId')}}</div>
+                }
+              </div>
+              <div class="form-group">
+                <label>Sắp xếp giường<span class="required">*</span></label>
+                <input type="text" class="form-control" formControlName="bedArrangement"
+                  [class.is-invalid]="isFieldInvalid('bedArrangement')" placeholder="VD: 1 King + 1 Sofa bed">
+                @if (isFieldInvalid('bedArrangement')) {
+                <div class="invalid-feedback">{{getErrorMessage('bedArrangement')}}</div>
+                }
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Diện tích (m²)<span class="required">*</span></label>
+                <input type="number" class="form-control" formControlName="areaSize"
+                  [class.is-invalid]="isFieldInvalid('areaSize')" placeholder="VD: 45.5" step="0.01">
+                @if (isFieldInvalid('areaSize')) {
+                <div class="invalid-feedback">{{getErrorMessage('areaSize')}}</div>
+                }
+              </div>
+              <div class="form-group">
+                <label>Chính sách hút thuốc<span class="required">*</span></label>
+                <div class="custom-select-wrapper">
+                  <select class="form-control custom-select" formControlName="smokingPolicy"
+                    [class.is-invalid]="isFieldInvalid('smokingPolicy')">
+                    <option value="" disabled>Chọn chính sách...</option>
+                    <option value="NOT_IN_ROOM">Không hút thuốc trong phòng</option>
+                    <option value="NO_SMOKING">Cấm hút thuốc</option>
+                    <option value="IN_ALLOWED_AREA">Cho phép hút thuốc tại khu vực quy định</option>
+                  </select>
+                  <i class="fa-solid fa-chevron-down custom-select-arrow"></i>
+                </div>
+                @if (isFieldInvalid('smokingPolicy')) {
+                <div class="invalid-feedback">{{getErrorMessage('smokingPolicy')}}</div>
+                }
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Loại phòng tắm<span class="required">*</span></label>
+              <input type="text" class="form-control" formControlName="bathroomType"
+                [class.is-invalid]="isFieldInvalid('bathroomType')" placeholder="VD: Bathtub, Shower">
+              @if (isFieldInvalid('bathroomType')) {
+              <div class="invalid-feedback">{{getErrorMessage('bathroomType')}}</div>
+              }
+            </div>
+          </div>
+          }
+
+          <!-- Tab 3: Hình ảnh -->
+          @if (activeTab() === 3) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Hình ảnh đại diện</h3>
+
+            @if (!imagePreviewUrl()) {
+            <!-- Upload Zone -->
+            <div class="upload-zone" (click)="fileInput.click()" (dragover)="$event.preventDefault()"
+              (drop)="$event.preventDefault(); onFileSelected($event)">
+              <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)">
+              <div class="upload-content">
+                <div class="upload-icon-wrapper">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <p class="upload-title">Nhấn để chọn ảnh</p>
+                <p class="upload-hint">Hỗ trợ JPG, PNG, WebP — Tối đa 5MB</p>
+              </div>
+            </div>
+            } @else {
+            <!-- Image Preview -->
+            <div class="image-preview-container">
+              <div class="preview-image-wrapper">
+                <img [src]="imagePreviewUrl()" alt="Preview" class="preview-image">
+                <button type="button" class="remove-image-btn" (click)="removeImage()" title="Xóa ảnh">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+              <div class="preview-info">
+                <div class="preview-file-info">
+                  <i class="fa-solid fa-image"></i>
+                  <span class="file-name">{{selectedFile()?.name}}</span>
+                </div>
+                <span class="file-size">{{(selectedFile()?.size || 0) / 1024 | number:'1.0-0'}} KB</span>
+              </div>
+              <button type="button" class="btn-outline btn-change-image" (click)="fileInput2.click()">
+                <i class="fa-solid fa-arrows-rotate"></i> Chọn ảnh khác
+              </button>
+              <input #fileInput2 type="file" accept="image/*" hidden (change)="onFileSelected($event)">
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn-outline" (click)="closeModal()" [disabled]="isSubmitting()">Hủy bỏ</button>
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+          <span class="btn-spinner"></span>
+          Đang lưu...
+          } @else {
+          Lưu loại phòng
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- View Modal -->
+<div class="modal-overlay" [class.show]="isViewModalOpen()">
+  <div class="modal-container" [class.slide-in]="isViewModalOpen()">
+    <div class="modal-header">
+      <h2 class="modal-title">Chi Tiết Loại Phòng</h2>
+      <button class="close-btn" (click)="closeViewModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    @if (selectedRoom()) {
+    <div class="flex-grow-1" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+      <div class="modal-body">
+        <!-- Tabs Sidebar -->
+        <div class="modal-tabs">
+          @for (tab of viewTabs; track tab.id) {
+          <button type="button" class="tab-btn" [class.active]="activeViewTab() === tab.id"
+            (click)="setViewTab(tab.id)">
+            <i class="fa-solid {{tab.icon}}"></i>
+            {{tab.title}}
+          </button>
+          }
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="modal-content-area cus-scroll">
+          <!-- Tab 0: Thông tin cơ bản -->
+          @if (activeViewTab() === 0) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Thông tin cơ bản</h3>
+            <div class="form-group">
+              <label>Tên loại phòng</label>
+              <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                {{selectedRoom()?.name}}</div>
+            </div>
+            <div class="form-group">
+              <label>Loại không gian/tầm nhìn</label>
+              <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                {{selectedRoom()?.viewType || 'Không có'}}</div>
+            </div>
+            <div class="form-group">
+              <label>Tổng số phòng</label>
+              <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                {{selectedRoom()?.totalRooms || 0}}</div>
+            </div>
+            <div class="form-group">
+              <label>Mô tả</label>
+              <div class="form-control"
+                style="background-color: var(--das-neutral-cloud, #EDF1F7); min-height: 100px; white-space: pre-wrap;">
+                {{selectedRoom()?.description || 'Không có mô tả'}}</div>
+            </div>
+          </div>
+          }
+
+          <!-- Tab 1: Sức chứa & Giá -->
+          @if (activeViewTab() === 1) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Sức chứa & Giá</h3>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Người lớn tiêu chuẩn</label>
+                <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                  {{selectedRoom()?.baseAdults || 0}}</div>
+              </div>
+              <div class="form-group">
+                <label>Trẻ em tiêu chuẩn</label>
+                <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                  {{selectedRoom()?.baseChildren || 0}}</div>
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Tối đa người lớn</label>
+                <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                  {{selectedRoom()?.maxAdults || 0}}</div>
+              </div>
+              <div class="form-group">
+                <label>Tối đa trẻ em</label>
+                <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                  {{selectedRoom()?.maxChildren || 0}}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Giá cơ bản/đêm (VND)</label>
+              <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                {{(selectedRoom()?.basePrice || 0) | currency: 'VND'}}</div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group checkbox-group">
+                <label class="checkbox-label" style="pointer-events: none;">
+                  <input type="checkbox" [checked]="selectedRoom()?.extraBedAllowed" disabled>
+                  <span>Cho phép kê thêm giường phụ</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label>Giá giường phụ (VND)</label>
+                <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                  {{selectedRoom()?.extraBedAllowed
+                  ? ((selectedRoom()?.extraBedPrice || 0) | currency: 'VND')
+                  : 'Không áp dụng'}}
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- Tab 2: Giường & Không gian -->
+          @if (activeViewTab() === 2) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Không gian & Giường</h3>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Loại giường</label>
+                <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                  {{selectedRoom()?.bedTypeName || 'Không rõ'}}</div>
+              </div>
+              <div class="form-group">
+                <label>Sắp xếp giường</label>
+                <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                  {{selectedRoom()?.bedArrangement || 'Không rõ'}}</div>
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Diện tích (m²)</label>
+                <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                  {{selectedRoom()?.areaSize || 0}}</div>
+              </div>
+              <div class="form-group">
+                <label>Chính sách hút thuốc</label>
+                <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                  {{selectedRoom()?.smokingPolicy === 'Not in room' ? 'Không hút thuốc trong phòng' :
+                  (selectedRoom()?.smokingPolicy === 'No smoking' ? 'Cấm hút thuốc' :
+                  (selectedRoom()?.smokingPolicy === 'In allowed area' ? 'Cho phép hút thuốc tại khu vực quy định' :
+                  selectedRoom()?.smokingPolicy || 'Không rõ'))}}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Loại phòng tắm</label>
+              <div class="form-control" style="background-color: var(--das-neutral-cloud, #EDF1F7);">
+                {{selectedRoom()?.bathroomType || 'Không rõ'}}</div>
+            </div>
+          </div>
+          }
+
+          <!-- Tab 3: Hình ảnh -->
+          @if (activeViewTab() === 3) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Hình ảnh</h3>
+            @if (selectedRoom()?.thumbnail) {
+            <div style="margin-bottom: 24px;">
+              <h4
+                style="font-size: 16px; font-weight: 500; color: var(--das-role-text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-star" style="color: #F59E0B;"></i> Ảnh đại diện
+              </h4>
+              <div class="preview-image-wrapper"
+                style="height: 300px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 12px; border: 2px solid var(--das-primary-ocean); box-shadow: 0 4px 12px rgba(24, 95, 165, 0.15);">
+                <img [src]="selectedRoom()?.thumbnail | roomTypeFallbackImg" alt="Thumbnail" class="preview-image"
+                  style="min-height: 100%; object-fit: cover; width: 100%;">
+              </div>
+            </div>
+            }
+
+            @if (otherViewImages().length > 0) {
+            <div>
+              <h4
+                style="font-size: 16px; font-weight: 500; color: var(--das-role-text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-images" style="color: var(--das-primary-ocean);"></i> Hình ảnh khác
+              </h4>
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                @for (img of otherViewImages(); track img) {
+                <div class="preview-image-wrapper"
+                  style="height: 150px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px;">
+                  <img [src]="img | roomTypeFallbackImg" alt="Room Image" class="preview-image"
+                    style="min-height: 100%; object-fit: cover; width: 100%;">
+                </div>
+                }
+              </div>
+            </div>
+            }
+
+            @if (!selectedRoom()?.thumbnail && otherViewImages().length === 0) {
+            <div class="empty-state" style="padding: 32px 0;">
+              <i class="fa-solid fa-image empty-icon"></i>
+              <p>Chưa có hình ảnh nào được tải lên cho loại phòng này.</p>
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Tab 4: Tiện nghi & Dịch vụ -->
+          @if (activeViewTab() === 4) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Tiện nghi & Dịch vụ</h3>
+
+            <div class="amenities-section" style="margin-bottom: 24px;">
+              <h4
+                style="font-size: 16px; font-weight: 500; color: var(--das-role-text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-spa" style="color: var(--das-primary-ocean);"></i> Tiện nghi trong phòng
+              </h4>
+              @if (viewAmenities().length > 0) {
+              <ul
+                style="list-style-type: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
+                @for (amenity of viewAmenities(); track amenity) {
+                <li
+                  style="display: flex; align-items: start; gap: 8px; color: var(--das-role-text-secondary); font-size: 14px;">
+                  <i class="fa-solid fa-check"
+                    style="color: var(--das-semantic-success, #22A06B); margin-top: 3px;"></i>
+                  <span>{{amenity}}</span>
+                </li>
+                }
+              </ul>
+              } @else {
+              <p style="color: var(--das-neutral-steel); font-size: 14px;">Không có dữ liệu tiện nghi.</p>
+              }
+            </div>
+
+            <div class="services-section">
+              <h4
+                style="font-size: 16px; font-weight: 500; color: var(--das-role-text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-concierge-bell" style="color: var(--das-primary-ocean);"></i> Dịch vụ
+              </h4>
+              @if (viewServices().length > 0) {
+              <ul
+                style="list-style-type: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">
+                @for (service of viewServices(); track service) {
+                <li
+                  style="display: flex; align-items: start; gap: 8px; color: var(--das-role-text-secondary); font-size: 14px;">
+                  <i class="fa-solid fa-check"
+                    style="color: var(--das-semantic-success, #22A06B); margin-top: 3px;"></i>
+                  <span>{{service}}</span>
+                </li>
+                }
+              </ul>
+              } @else {
+              <p style="color: var(--das-neutral-steel); font-size: 14px;">Không có dữ liệu dịch vụ.</p>
+              }
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer" style="justify-content: flex-end; padding: 16px 24px;">
+        <button type="button" class="btn-primary" (click)="closeViewModal()">Đóng</button>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Edit Room Type Modal -->
+<div class="modal-overlay" [class.show]="isEditModalOpen()">
+  <div class="modal-container" [class.slide-in]="isEditModalOpen()">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <div class="modal-title-icon">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </div>
+        <div>
+          <h2 class="modal-title">Chỉnh sửa Loại Phòng</h2>
+          <p class="modal-subtitle">{{ selectedRoom()?.name || 'Đang tải...' }}</p>
+        </div>
+      </div>
+      <button class="close-btn" type="button" (click)="closeEditModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <!-- Tabs Sidebar -->
+      <div class="modal-tabs">
+        @for (tab of editTabs; track tab.id) {
+        <button type="button" class="tab-btn" [class.active]="activeEditTab() === tab.id"
+          (click)="nextTab(tab.id, tab.form)">
+          <i class="fa-solid {{ tab.icon }}"></i>
+          {{ tab.title }}
+          @if (editSaveSuccess() === tab.id) {
+          <span class="tab-saved-badge">
+            <i class="fa-solid fa-check"></i>
+          </span>
+          }
+        </button>
+        }
+      </div>
+
+      <div class="modal-content-area cus-scroll">
+        <!-- Tab 0 -->
+        @if (activeEditTab() === 0) {
+        <div class="tab-pane fade-in">
+          <h3 class="pane-title">Thông tin cơ bản</h3>
+          <form [formGroup]="basicForm" (ngSubmit)="saveBasicInfo()">
+            <div class="form-group">
+              <label>
+                Tên loại phòng <span class="required">*</span>
+              </label>
+              <input type="text" class="form-control" formControlName="name"
+                placeholder="VD: Deluxe Ocean View Double Room"
+                [class.is-invalid]="isEditFieldInvalid('basic', 'name')" />
+              @if (isEditFieldInvalid('basic', 'name')) {
+              <div class="invalid-feedback">{{ getEditErrorMessage('basic', 'name') }}</div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Loại không gian/tầm nhìn</label>
+              <input type="text" class="form-control" formControlName="viewType"
+                placeholder="VD: Ocean View, Garden View, City View..." />
+            </div>
+
+            <div class="form-group" style="max-width: 220px;">
+              <label>
+                Tổng số phòng <span class="required">*</span>
+              </label>
+              <div class="number-input-wrapper">
+                <button type="button" class="num-btn"
+                  (click)="basicForm.get('totalRooms')!.setValue(math.max(0, (basicForm.get('totalRooms')!.value || 0) - 1))">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <input type="number" class="form-control num-control" formControlName="totalRooms" min="0"
+                  [class.is-invalid]="isEditFieldInvalid('basic', 'totalRooms')" />
+                <button type="button" class="num-btn"
+                  (click)="basicForm.get('totalRooms')!.setValue((basicForm.get('totalRooms')!.value || 0) + 1)">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+              @if (isEditFieldInvalid('basic', 'totalRooms')) {
+              <div class="invalid-feedback">{{ getEditErrorMessage('basic', 'totalRooms') }}</div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Mô tả</label>
+              <textarea class="form-control" formControlName="description" rows="5"
+                placeholder="Mô tả chi tiết về loại phòng này..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-save" [disabled]="basicForm.invalid || isEditSaving()">
+                @if (isEditSaving()) {
+                <span class="spinner"></span> Đang lưu...
+                } @else {
+                <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin cơ bản
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+        }
+
+        <!-- Tab 1 -->
+        @if (activeEditTab() === 1) {
+        <div class="tab-pane fade-in">
+          <h3 class="pane-title">Sức chứa & Giá</h3>
+          <form [formGroup]="capacityForm" (ngSubmit)="saveCapacityAndPrice()">
+
+            <div class="section-divider">
+              <span><i class="fa-solid fa-users"></i> Sức chứa tiêu chuẩn</span>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Người lớn tiêu chuẩn <span class="required">*</span></label>
+                <div class="number-input-wrapper">
+                  <button type="button" class="num-btn"
+                    (click)="capacityForm.get('baseAdults')!.setValue(math.max(1, (capacityForm.get('baseAdults')!.value || 1) - 1))">
+                    <i class="fa-solid fa-minus"></i>
+                  </button>
+                  <input type="number" class="form-control num-control" formControlName="baseAdults" min="1"
+                    [class.is-invalid]="isEditFieldInvalid('capacity', 'baseAdults')" />
+                  <button type="button" class="num-btn"
+                    (click)="capacityForm.get('baseAdults')!.setValue((capacityForm.get('baseAdults')!.value || 1) + 1)">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                @if (isEditFieldInvalid('capacity', 'baseAdults')) {
+                <div class="invalid-feedback">{{ getEditErrorMessage('capacity', 'baseAdults') }}</div>
+                }
+              </div>
+              <div class="form-group">
+                <label>Trẻ em tiêu chuẩn</label>
+                <div class="number-input-wrapper">
+                  <button type="button" class="num-btn"
+                    (click)="capacityForm.get('baseChildren')!.setValue(math.max(0, (capacityForm.get('baseChildren')!.value || 0) - 1))">
+                    <i class="fa-solid fa-minus"></i>
+                  </button>
+                  <input type="number" class="form-control num-control" formControlName="baseChildren" min="0"
+                    [class.is-invalid]="isEditFieldInvalid('capacity', 'baseChildren')" />
+                  <button type="button" class="num-btn"
+                    (click)="capacityForm.get('baseChildren')!.setValue((capacityForm.get('baseChildren')!.value || 0) + 1)">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                @if (isEditFieldInvalid('capacity', 'baseChildren')) {
+                <div class="invalid-feedback">{{ getEditErrorMessage('capacity', 'baseChildren') }}</div>
+                }
+              </div>
+            </div>
+
+            <div class="section-divider">
+              <span><i class="fa-solid fa-users-line"></i> Sức chứa tối đa</span>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Tối đa người lớn <span class="required">*</span></label>
+                <div class="number-input-wrapper">
+                  <button type="button" class="num-btn"
+                    (click)="capacityForm.get('maxAdults')!.setValue(math.max(1, (capacityForm.get('maxAdults')!.value || 1) - 1))">
+                    <i class="fa-solid fa-minus"></i>
+                  </button>
+                  <input type="number" class="form-control num-control" formControlName="maxAdults" min="1"
+                    [class.is-invalid]="isEditFieldInvalid('capacity', 'maxAdults')" />
+                  <button type="button" class="num-btn"
+                    (click)="capacityForm.get('maxAdults')!.setValue((capacityForm.get('maxAdults')!.value || 1) + 1)">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                @if (isEditFieldInvalid('capacity', 'maxAdults')) {
+                <div class="invalid-feedback">{{ getEditErrorMessage('capacity', 'maxAdults') }}</div>
+                }
+              </div>
+              <div class="form-group">
+                <label>Tối đa trẻ em</label>
+                <div class="number-input-wrapper">
+                  <button type="button" class="num-btn"
+                    (click)="capacityForm.get('maxChildren')!.setValue(math.max(0, (capacityForm.get('maxChildren')!.value || 0) - 1))">
+                    <i class="fa-solid fa-minus"></i>
+                  </button>
+                  <input type="number" class="form-control num-control" formControlName="maxChildren" min="0"
+                    [class.is-invalid]="isEditFieldInvalid('capacity', 'maxChildren')" />
+                  <button type="button" class="num-btn"
+                    (click)="capacityForm.get('maxChildren')!.setValue((capacityForm.get('maxChildren')!.value || 0) + 1)">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                @if (isEditFieldInvalid('capacity', 'maxChildren')) {
+                <div class="invalid-feedback">{{ getEditErrorMessage('capacity', 'maxChildren') }}</div>
+                }
+              </div>
+            </div>
+
+            <div class="section-divider">
+              <span><i class="fa-solid fa-tag"></i> Giá phòng</span>
+            </div>
+            <div class="form-group">
+              <label>Giá cơ bản/đêm (VND) <span class="required">*</span></label>
+              <input type="text" class="form-control" [value]="editBasePriceDisplay()"
+                (input)="onEditPriceInput($event, 'basePrice')"
+                [class.is-invalid]="isEditFieldInvalid('capacity', 'basePrice')" placeholder="VD: 500,000"
+                inputmode="numeric" />
+              @if (isEditFieldInvalid('capacity', 'basePrice')) {
+              <div class="invalid-feedback">{{ getEditErrorMessage('capacity', 'basePrice') }}</div>
+              }
+            </div>
+
+            <div class="section-divider">
+              <span><i class="fa-solid fa-bed"></i> Giường phụ</span>
+            </div>
+            <div class="form-row-2" style="align-items: flex-start;">
+              <div class="form-group">
+                <label>Tuỳ chọn</label>
+                <label class="toggle-switch-label">
+                  <div class="toggle-switch">
+                    <input type="checkbox" formControlName="extraBedAllowed" />
+                    <span class="toggle-track">
+                      <span class="toggle-thumb"></span>
+                    </span>
+                  </div>
+                  <span class="toggle-text">Cho phép kê thêm giường phụ</span>
+                </label>
+              </div>
+              <div class="form-group" [class.field-disabled]="!editExtraBedAllowed">
+                <label>Giá giường phụ (VND)
+                  @if (editExtraBedAllowed) {
+                  <span class="required">*</span>
+                  }
+                </label>
+                <input type="text" class="form-control" [value]="editExtraBedPriceDisplay()"
+                  (input)="onEditPriceInput($event, 'extraBedPrice')"
+                  [class.is-invalid]="isEditFieldInvalid('capacity', 'extraBedPrice')"
+                  placeholder="Nhập giá giường phụ..." inputmode="numeric" />
+                @if (isEditFieldInvalid('capacity', 'extraBedPrice')) {
+                <div class="invalid-feedback">{{ getEditErrorMessage('capacity', 'extraBedPrice') }}</div>
+                }
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-save" [disabled]="capacityForm.invalid || isEditSaving()">
+                @if (isEditSaving()) {
+                <span class="spinner"></span> Đang lưu...
+                } @else {
+                <i class="fa-solid fa-floppy-disk"></i> Lưu sức chứa & giá
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+        }
+
+        <!-- Tab 2 -->
+        @if (activeEditTab() === 2) {
+        <div class="tab-pane fade-in">
+          <h3 class="pane-title">Giường & Không gian</h3>
+          <form [formGroup]="bedSpaceForm" (ngSubmit)="saveBedAndSpace()">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Loại giường <span class="required">*</span></label>
+                <div class="custom-select-wrapper">
+                  <select class="form-control custom-select" formControlName="bedTypeId"
+                    [class.is-invalid]="isEditFieldInvalid('bedSpace', 'bedTypeId')">
+                    <option value="" disabled>Chọn loại giường...</option>
+                    @for (opt of bedTypes(); track opt) {
+                    <option [value]="opt.id">{{ opt.code }} - {{ opt.name }}</option>
+                    }
+                  </select>
+                  <i class="fa-solid fa-chevron-down custom-select-arrow"></i>
+                </div>
+                @if (isEditFieldInvalid('bedSpace', 'bedTypeId')) {
+                <div class="invalid-feedback">{{ getEditErrorMessage('bedSpace', 'bedTypeId') }}</div>
+                }
+              </div>
+              <div class="form-group">
+                <label>Sắp xếp giường <span class="required">*</span></label>
+                <input type="text" class="form-control" formControlName="bedArrangement"
+                  placeholder="VD: 1 giường đôi lớn..."
+                  [class.is-invalid]="isEditFieldInvalid('bedSpace', 'bedArrangement')" />
+                @if (isEditFieldInvalid('bedSpace', 'bedArrangement')) {
+                <div class="invalid-feedback">{{ getEditErrorMessage('bedSpace', 'bedArrangement') }}</div>
+                }
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Diện tích (m²) <span class="required">*</span></label>
+                <div class="input-icon-wrapper">
+                  <input type="number" class="form-control with-suffix" formControlName="areaSize" min="0"
+                    placeholder="0" [class.is-invalid]="isEditFieldInvalid('bedSpace', 'areaSize')" />
+                  <span class="input-suffix">m²</span>
+                </div>
+                @if (isEditFieldInvalid('bedSpace', 'areaSize')) {
+                <div class="invalid-feedback">{{ getEditErrorMessage('bedSpace', 'areaSize') }}</div>
+                }
+              </div>
+              <div class="form-group">
+                <label>Loại phòng tắm <span class="required">*</span></label>
+                <input type="text" class="form-control" formControlName="bathroomType"
+                  [class.is-invalid]="isEditFieldInvalid('bedSpace', 'bathroomType')"
+                  placeholder="VD: Vòi tắm đứng,..." />
+                @if (isEditFieldInvalid('bedSpace', 'bathroomType')) {
+                <div class="invalid-feedback">{{ getEditErrorMessage('bedSpace', 'bathroomType') }}</div>
+                }
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Chính sách hút thuốc</label>
+              <div class="radio-group">
+                @for (opt of smokingOptions; track opt.value) {
+                <label class="radio-option" [class.selected]="bedSpaceForm.get('smokingPolicy')?.value === opt.value">
+                  <input type="radio" [value]="opt.value" formControlName="smokingPolicy" />
+                  <span class="radio-label">{{ opt.label }}</span>
+                </label>
+                }
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-save" [disabled]="bedSpaceForm.invalid || isEditSaving()">
+                @if (isEditSaving()) {
+                <span class="spinner"></span> Đang lưu...
+                } @else {
+                <i class="fa-solid fa-floppy-disk"></i> Lưu không gian & giường
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+        }
+
+        <!-- Tab 3 -->
+        @if (activeEditTab() === 3) {
+        <div class="tab-pane fade-in">
+          <h3 class="pane-title">Hình ảnh</h3>
+          <div class="upload-zone thumbnail-zone">
+            <div class="upload-icon-ring">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <p class="upload-title">Ảnh đại diện (Thumbnail)</p>
+            <p class="upload-hint">PNG, JPG, WEBP · Tối đa 5MB · Khuyến nghị 1280×720px</p>
+            <label class="upload-btn">
+              <input type="file" accept="image/*" hidden />
+              <i class="fa-solid fa-arrow-up-from-bracket"></i> Chọn ảnh
+            </label>
+          </div>
+
+          <div class="upload-zone gallery-zone">
+            <div class="upload-icon-ring gallery-ring">
+              <i class="fa-solid fa-images"></i>
+            </div>
+            <p class="upload-title">Thư viện ảnh</p>
+            <p class="upload-hint">Tải nhiều ảnh cùng lúc · PNG, JPG, WEBP · Tối đa 5MB/ảnh</p>
+            <label class="upload-btn secondary">
+              <input type="file" accept="image/*" multiple hidden />
+              <i class="fa-solid fa-plus"></i> Thêm hình ảnh
+            </label>
+          </div>
+
+          <div class="info-banner">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Chức năng tải ảnh sẽ được tích hợp API trong giai đoạn tiếp theo.</span>
+          </div>
+        </div>
+        }
+
+        <!-- Tab 4 -->
+        @if (activeEditTab() === 4) {
+        <div class="tab-pane fade-in">
+          <h3 class="pane-title">Tiện nghi & Dịch vụ</h3>
+
+          <!-- Tiện nghi -->
+          <div class="amenity-section">
+            <h4 class="section-heading">
+              <i class="fa-solid fa-spa"></i>
+              Tiện nghi trong phòng
+              <span class="count-badge">{{ editAmenities().filter(a => a.checked).length }}/{{ editAmenities().length
+                }}</span>
+            </h4>
+            <div class="checkbox-grid">
+              @for (item of editAmenities(); track item.id) {
+              <label class="checkbox-card" [class.checked]="item.checked" (click)="toggleEditAmenity(item.name)">
+                <div class="checkbox-card-icon">
+                  <i class="fa-solid fa-building-circle-check"></i>
+                </div>
+                <span class="checkbox-card-label">{{ item.name }}</span>
+                <div class="checkbox-card-tick">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+              </label>
+              }
+            </div>
+          </div>
+
+          <!-- Dịch vụ -->
+          <div class="amenity-section">
+            <h4 class="section-heading">
+              <i class="fa-solid fa-concierge-bell"></i>
+              Dịch vụ đi kèm
+              <span class="count-badge">{{ editServices().filter(s => s.checked).length }}/{{ editServices().length
+                }}</span>
+            </h4>
+            <div class="checkbox-grid">
+              @for (item of editServices(); track item.id) {
+              <label class="checkbox-card" [class.checked]="item.checked" (click)="toggleEditService(item.name)">
+                <div class="checkbox-card-icon">
+                  <i class="fa-solid fa-building-circle-check"></i>
+                </div>
+                <span class="checkbox-card-label">{{ item.name }}</span>
+                <div class="checkbox-card-tick">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+              </label>
+              }
+            </div>
+          </div>
+
+          @if (isEditSaving()) {
+          <div class="autosave-indicator">
+            <span class="spinner small"></span> Đang tự động lưu...
+          </div>
+          }
+          @if (editSaveSuccess() === 4) {
+          <div class="autosave-indicator saved">
+            <i class="fa-solid fa-circle-check"></i> Đã lưu thành công!
+          </div>
+          }
+        </div>
+        }
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="closeEditModal()">
+        <i class="fa-solid fa-xmark"></i> Đóng
+      </button>
+    </div>
+  </div>
+</div>

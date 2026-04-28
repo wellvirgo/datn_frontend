@@ -1,0 +1,54 @@
+<div class="das-customer-layout">
+  <div class="das-customer-container">
+    <div class="header-actions">
+      <h2 style="margin: 0 0 20px 0; color: var(--das-role-text-primary, #1C2F42); font-size: 20px; font-weight: 600;">
+        Danh sách khách hàng</h2>
+
+      <div class="filters-grid">
+        <div class="form-group">
+          <label>Tên khách hàng</label>
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" class="search-input" placeholder="Nhập tên khách hàng..." [ngModel]="inputNameFilter()"
+              (ngModelChange)="onNameChange($event)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Số điện thoại</label>
+          <div class="search-box">
+            <i class="fa-solid fa-phone search-icon"></i>
+            <input type="text" class="search-input" placeholder="Nhập số điện thoại..." [ngModel]="inputPhoneFilter()"
+              (ngModelChange)="onPhoneChange($event)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <div class="search-box">
+            <i class="fa-regular fa-envelope search-icon"></i>
+            <input type="text" class="search-input" placeholder="Nhập email..." [ngModel]="inputEmailFilter()"
+              (ngModelChange)="onEmailChange($event)  ">
+          </div>
+        </div>
+
+        <div class="form-action">
+          <button class="btn-clear" (click)="clearFilters()" title="Xóa bộ lọc">
+            <i class="fa-solid fa-filter-circle-xmark"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="das-customer-content">
+      <ag-grid-angular class="das-customer-table" [columnDefs]="colDefs" [rowData]="customersResource.value()?.items"
+        [loading]="customersResource.isLoading()" [theme]="theme" [defaultColDef]="defaultColDef"
+        [enableCellTextSelection]="true">
+      </ag-grid-angular>
+    </div>
+
+    <app-pagination-component [currentPage]="currentPage()" [totalPages]="customersResource.value()?.totalPages ?? 0"
+      [totalItems]="customersResource.value()?.total ?? 0"
+      (nextPage)="currentPage.set($event)"></app-pagination-component>
+  </div>
+</div>

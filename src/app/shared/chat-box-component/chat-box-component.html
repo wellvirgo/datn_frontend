@@ -1,0 +1,76 @@
+<div class="chat-widget" [class.open]="isChatOpen">
+    <button type="button" class="chat-fab" (click)="toggleChat()"
+        [attr.aria-label]="isChatOpen ? 'Ẩn chat AI' : 'Mở chat AI'">
+        @if (isChatOpen) {
+        <span>&times;</span>
+        } @else {
+        <span><i class="fa-solid fa-headset"></i></span>
+        }
+    </button>
+
+    <section class="chatbox-shell" [class.open]="isChatOpen">
+        <header class="chatbox-header">
+            <div class="chatbox-header-title">
+                <span class="ai-dot"></span>
+                <div>
+                    <h3>Trợ lý AI Khách Sạn</h3>
+                    <p>Online • Tư vấn 24/7</p>
+                </div>
+            </div>
+        </header>
+
+        @if(messages().length === 0) {
+        <div class="quick-prompts">
+            @for (prompt of quickPrompts; track prompt) {
+            <button type="button" class="prompt-chip" (click)="applyPrompt(prompt)">{{ prompt }}</button>
+            }
+        </div>
+
+        <div class="chatbox-messages cus-scroll">
+            <div class="welcome-text">
+                <p>Tôi là lễ tân AI. Tôi có thể giúp gì cho bạn?</p>
+            </div>
+        </div>
+        } @else {
+        <div class="chatbox-messages cus-scroll">
+            @for (message of messages(); track $index) {
+            <article class="message-row" [class.user]="message.role === 'user'">
+                <div class="message-bubble">
+                    @if(message.role === 'assistant') {
+                    <markdown [data]="message.content"></markdown>
+                    } @else {
+                    <p>{{ message.content }}</p>
+                    }
+                    <time>{{ message.time }}</time>
+                </div>
+            </article>
+            }
+
+            @if (isLoading()) {
+            <article class="message-row">
+                <div class="message-bubble typing-indicator">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </article>
+            }
+
+            @if (showNewChatButton()) {
+            <div class="new-chat-action">
+                <button type="button" class="new-chat-btn" (click)="startNewChat()">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    Tạo đoạn chat mới
+                </button>
+            </div>
+            }
+        </div>
+        }
+
+        <footer class="chatbox-input">
+            <textarea class="cus-scroll" [(ngModel)]="draftMessage" placeholder="Nhập câu hỏi..." rows="2"
+                (keydown)="handleKeydown($event)"></textarea>
+            <button type="button" class="send-btn" (click)="submitMessage()" [disabled]="isLoading()">Gửi</button>
+        </footer>
+    </section>
+</div>

@@ -1,0 +1,86 @@
+<div class="container-fluid bg min-vh-100">
+    <div class="row min-vh-100 login-container justify-content-center">
+        <div class="col-5 brand-panel">
+            <div class="brand-logo-block">
+                <div class="brand-icon">
+                    <div class="diamond"></div>
+                </div>
+                <div class="brand-name">AUGUST<br /> GRAND</div>
+                <div class="brand-tag">Hotel & Residence</div>
+            </div>
+            <div>
+                <div class="brand-headline">
+                    Đẳng cấp dịch vụ <br /> Quản lý hoàn hảo
+                </div>
+                <div class="brand-desc">
+                    Hệ thống quản lý và đặt phòng khách sạn toàn diện, giúp tối ưu vận hành và nâng cao trải nghiệm
+                    khách hàng.
+                </div>
+            </div>
+            <div class="brand-features">
+                <div class="feature-row">
+                    <div class="feature-dot"></div>
+                    <div class="feature-text">Đặt phòng nhanh chóng chỉ với vài bước</div>
+                </div>
+                <div class="feature-row">
+                    <div class="feature-dot"></div>
+                    <div class="feature-text">Thông tin phòng và giá cả minh bạch</div>
+                </div>
+                <div class="feature-row">
+                    <div class="feature-dot"></div>
+                    <div class="feature-text">Quản lý đặt phòng thuận tiện</div>
+                </div>
+                <div class="feature-row">
+                    <div class="feature-dot"></div>
+                    <div class="feature-text">Hỗ trợ khách hàng 24/7</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-5 login-panel">
+            <div class="tab-row"></div>
+            <div class="form-section">
+                <div class="section-title">Chào mừng đến với chúng tôi</div>
+                <div class="section-sub">Đăng ký</div>
+                <tui-loader [showLoader]="isLoading()">
+                    <form tuiForm="l" [formGroup]="signUpForm">
+                        <fieldset>
+                            <tui-textfield>
+                                <label tuiLabel>Họ tên</label>
+                                <input tuiTextfield class="login-input" placeholder="Nhập họ tên"
+                                    formControlName="fullName" [readOnly]="isLoading()" />
+                            </tui-textfield>
+                        </fieldset>
+                        <fieldset>
+                            <tui-textfield>
+                                <label tuiLabel>Email</label>
+                                <input tuiTextfield class="login-input" placeholder="Nhập email" formControlName="email"
+                                    [readOnly]="isLoading()" />
+                            </tui-textfield>
+                        </fieldset>
+                        <tui-error formControlName="email" [error]="[]|tuiFieldError|async"></tui-error>
+                        <fieldset>
+                            <tui-textfield>
+                                <label tuiLabel>Mật khẩu</label>
+                                <input tuiTextfield type="password" class="login-input" placeholder="Nhập mật khẩu"
+                                    formControlName="password" [readOnly]="isLoading()" />
+                                <tui-icon tuiPassword />
+                            </tui-textfield>
+                        </fieldset>
+                        <tui-error formControlName="password" [error]="[]|tuiFieldError|async"></tui-error>
+                        <div class="mt-5">
+                            <button class="login-btn" tuiButton appearance="textfield" style="width: 100%;"
+                                (click)="signUp()">
+                                Đăng ký
+                            </button>
+                        </div>
+                    </form>
+                </tui-loader>
+            </div>
+            <div class="text-center mt-2">
+                <p style="color: var(--gold);">
+                    Có tài khoản?<button class="btn btn-link text-white" (click)="navigateLogin()">Đăng nhập</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

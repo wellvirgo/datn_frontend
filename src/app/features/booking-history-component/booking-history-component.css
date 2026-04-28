@@ -1,0 +1,143 @@
+.history-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 120px;
+  font-family: 'Inter', sans-serif;
+  min-height: calc(100vh - 200px);
+  background-color: var(--cream);
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--cream, #F7F2EA);
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--dark, #0D0D0D);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+}
+
+.page-description {
+  font-size: 15px;
+  color: var(--text-dark-4, #666);
+  margin: 0;
+}
+
+/* Content Area */
+.content-section {
+  position: relative;
+  min-height: 300px;
+}
+
+/* State Containers (Loading, Error, Empty) */
+.state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px dashed var(--gold-pale, #F5EDD5);
+}
+
+.state-container h3 {
+  font-size: 18px;
+  color: var(--dark, #0D0D0D);
+  margin: 0 0 12px 0;
+  font-weight: 600;
+}
+
+.state-container p {
+  font-size: 15px;
+  color: var(--text-dark-4, #666);
+  max-width: 400px;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.icon-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.icon-circle.error {
+  background-color: #FCE8E6;
+  color: #D93025;
+}
+
+.icon-circle.empty {
+  background-color: var(--cream, #F7F2EA);
+  color: var(--gold, #C9A84C);
+}
+
+/* Buttons */
+.btn-primary {
+  padding: 14px 28px;
+  background-color: var(--gold, #C9A84C);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background-color: var(--gold-dark, #B59744);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  padding: 12px 24px;
+  background-color: transparent;
+  color: var(--dark, #0D0D0D);
+  border: 1px solid var(--dark-4, #CCC);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+  border-color: var(--dark, #0D0D0D);
+  background-color: #fafbfc;
+}
+
+/* Spinner */
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(201, 168, 76, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--gold, #C9A84C);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* List Layout */
+.booking-list {
+  display: flex;
+  flex-direction: column;
+}

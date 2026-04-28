@@ -1,0 +1,91 @@
+<div class="report-revenue-layout">
+    <div class="report-revenue-container cus-scroll">
+        <div class="header-actions">
+            <div class="header-title-row">
+                <h2 style="margin: 0; color: var(--das-role-text-primary, #1C2F42); font-size: 20px; font-weight: 600;">
+                    Thống kê doanh thu
+                </h2>
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label>Chọn khoảng thời gian</label>
+                        <div class="search-box">
+                            <tui-textfield [tuiTextfieldCleaner]="false">
+                                <input tuiInputDateRange [(ngModel)]="dateRange" placeholder="dd/mm/yyyy - dd/mm/yyyy"
+                                    class="custom-input-date" />
+                                <tui-calendar-range *tuiTextfieldDropdown></tui-calendar-range>
+                            </tui-textfield>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <tui-loader [overlay]="true" [size]="'xxl'" [showLoader]="isLoading()">
+            <div class="report-revenue-content">
+                <div class="kpi-grid">
+                    <div class="das-stat-card card-revenue">
+                        <div class="stat-header">
+                            <span>Tổng doanh thu</span>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-sack-dollar"></i>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">
+                                {{ formatVND(kpiData()?.totalRevenue??0) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="das-stat-card card-adr">
+                        <div class="stat-header">
+                            <span>Giá phòng trung bình mỗi ngày</span>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-money-bill-trend-up"></i>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">
+                                {{ formatVND(kpiData()?.averageDailyRate??0) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="das-stat-card card-revpar">
+                        <div class="stat-header">
+                            <span>Doanh thu trên mỗi phòng mở bán</span>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-bed"></i>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">
+                                {{ formatVND(kpiData()?.revenuePerAvailableRoom??0) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="das-stat-card card-debt">
+                        <div class="stat-header">
+                            <span>Tổng nợ</span>
+                            <div class="stat-icon">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">
+                                {{ formatVND(kpiData()?.totalDebt??0) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="chart">
+                    <apx-chart [series]="chartOptions().series" [chart]="chartOptions().chart"
+                        [xaxis]="chartOptions().xaxis" [yaxis]="chartOptions().yaxis" [title]="chartOptions().title"
+                        [dataLabels]="chartOptions().dataLabels" [tooltip]="chartOptions().tooltip">
+                    </apx-chart>
+                </div>
+            </div>
+        </tui-loader>
+    </div>
+</div>

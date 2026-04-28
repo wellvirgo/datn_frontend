@@ -1,0 +1,59 @@
+@if (item() ) {
+<div class="room-card">
+    <div class="rc-thumbnail" (click)="goToDetail(item().id)">
+        @if(item().thumbnail != null){
+        <img [src]="item().thumbnail" [alt]="item().name" loading="lazy" />
+        }
+        @else {
+        <img src="https://placehold.co/600x400" [alt]="item().name" loading="lazy">
+        }
+    </div>
+
+    <div class="rc-content">
+        <h3 class="rc-title" (click)="goToDetail(item().id)">{{ item().name }}</h3>
+
+        <div class="rc-info-grid">
+            <div class="rc-info-item">
+                <i class="fa-solid fa-bed icon"></i>
+                <span class="text">{{ item().bedTypeName }}</span>
+            </div>
+
+            <div class="rc-info-item full-width">
+                <i class="fa-solid fa-user-group icon"></i>
+                <span class="text">{{ item().maxAdults }} người lớn, {{ item().maxChildren }} trẻ em tổng dưới {{
+                    item().maxOccupancy }}</span>
+            </div>
+
+            <div class="rc-info-item">
+                @if (item().extraBedAllowed) {
+                <i class="fa-solid fa-plus icon"></i>
+                <span class="text">Cho phép thêm giường</span>
+                } @else {
+                <i class="fa-solid fa-ban icon"></i>
+                <span class="text">Không thêm giường</span>
+                }
+            </div>
+
+            <div class="rc-info-item">
+                <i class="fa-solid fa-smoking icon"></i>
+                <span class="text">{{ item().smokingPolicy }}</span>
+            </div>
+
+            <div class="rc-info-item">
+                <i class="fa-solid fa-panorama icon"></i>
+                <span class="text">{{ item().viewType }}</span>
+            </div>
+
+            <div class="rc-info-item">
+                <i class="fa-solid fa-ruler-combined icon"></i>
+                <span class="text">{{ item().areaSize }} m<sup>2</sup></span>
+            </div>
+
+            <div class="rc-info-item">
+                <i class="fa-solid fa-bath icon"></i>
+                <span class="text">{{ item().bathroomType }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+}

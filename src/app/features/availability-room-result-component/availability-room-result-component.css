@@ -1,0 +1,151 @@
+:host {
+    display: block;
+    font-family: 'Inter', sans-serif;
+}
+
+.title {
+    text-transform: uppercase;
+    font-size: 32px;
+    font-weight: 800;
+    text-align: center;
+    color: var(--dark);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.sub-title {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--gold);
+    font-weight: 500;
+}
+
+.search-box {
+    padding: 24px 32px;
+    background-color: var(--dark-2);
+    border-radius: 20px;
+    border: 1px solid rgba(247, 242, 234, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.search-btn {
+    background-color: var(--gold) !important;
+    color: white !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: var(--gold-light) !important;
+}
+
+.sticky-summary-container {
+    position: sticky;
+    top: 24px;
+    z-index: 10;
+}
+
+.booking-summary-card {
+    background-color: var(--dark-2);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(247, 242, 234, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.summary-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 24px;
+    border-bottom: 1px dashed rgba(201, 168, 76, 0.3);
+    padding-bottom: 12px;
+}
+
+.summary-label {
+    color: var(--text-soft);
+    font-size: 14px;
+}
+
+.summary-value {
+    color: var(--cream);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.summary-divider {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin: 16px 0;
+}
+
+.room-price {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--gold-light);
+}
+
+.booking-btn {
+    background-color: var(--gold) !important;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.booking-btn[disabled] {
+    background-color: var(--dark-4) !important;
+    color: var(--text-dim) !important;
+    opacity: 0.7;
+}
+
+.no-result {
+    padding: 60px 20px;
+    background-color: var(--dark-2);
+    border-radius: 16px;
+    border: 1px solid rgba(247, 242, 234, 0.05);
+}
+
+.no-result h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.no-result p {
+    color: var(--text-soft);
+    font-size: 15px;
+    text-align: center;
+}
+
+::ng-deep .search-box tui-textfield {
+    border-radius: 12px !important;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.fullscreen-modal {
+    animation: slideUp 0.5s ease-out forwards;
+}
+
+.modal-body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.modal-body::-webkit-scrollbar {
+    display: none;
+}

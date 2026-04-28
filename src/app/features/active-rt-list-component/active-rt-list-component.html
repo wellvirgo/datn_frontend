@@ -1,0 +1,31 @@
+<app-side-menu-component></app-side-menu-component>
+<app-booking-button-component></app-booking-button-component>
+<div class="active-rt-container">
+    <div class="container py-5">
+        <img src="assets/images/banner-room.jpg" alt="" class="banner-image">
+
+        <div class="text-center mb-5">
+            <h2 class="section-title">Danh sách phòng</h2>
+            <div class="title-underline"></div>
+            <p class="section-subtitle mt-3">Lựa chọn không gian nghỉ ngơi phù hợp nhất cho chuyến đi của bạn</p>
+        </div>
+
+        @if (isLoading()) {
+        <div class="text-center py-5 loading-wrapper">
+            <div class="spinner-border text-warning" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        } @else {
+        <div class="row g-4 align-items-stretch">
+            @for (item of items(); track $index) {
+            <div class="col-12 col-md-6 col-lg-4 d-flex">
+                <app-room-type-summary-item-component class="w-100 d-flex flex-column"
+                    [item]="item"></app-room-type-summary-item-component>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
+<app-footer-component></app-footer-component>

@@ -1,0 +1,118 @@
+@if(item()){
+<div class="booking-item-card" [class.is-expanded]="isExpanded">
+  <div class="booking-overview" (click)="toggleExpand()">
+    <div class="overview-section">
+      <span class="label">Mã đặt phòng</span>
+      <strong class="value highlight">{{item().bookingCode}}</strong>
+    </div>
+
+    <div class="overview-section">
+      <span class="label">Ngày nhận - trả phòng</span>
+      <span class="value">{{item().checkInDate | date:'dd/MM/yyyy'}} - {{item().checkOutDate |
+        date:'dd/MM/yyyy'}}</span>
+    </div>
+
+    <div class="overview-section right-align">
+      <span class="label">Tổng tiền</span>
+      <strong class="value price">{{item().totalAmount | currency:'VND'}}</strong>
+    </div>
+
+    <button class="expand-btn" aria-label="Expand details" (click)="toggleExpand(); $event.stopPropagation()">
+      <svg [class.rotated]="isExpanded" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Detailed Information -->
+  <div class="booking-details-wrapper">
+    <div class="booking-details-content">
+      <div class="inner-content">
+        <hr class="divider">
+
+        <div class="details-grid">
+          <!-- Customer Info -->
+          <div class="detail-group">
+            <h4>Thông tin khách hàng</h4>
+            <p><span class="label">Tên người đặt:</span> <span class="group-val">{{item().customerName || 'N/A'}}</span>
+            </p>
+            <p><span class="label">Số điện thoại:</span> <span class="group-val">{{item().customerPhone ||
+                'N/A'}}</span></p>
+          </div>
+
+          <!-- Payment Info -->
+          <div class="detail-group">
+            <h4>Thông tin thanh toán</h4>
+            <p><span class="label">Trạng thái:</span>
+              <span class="status-badge" [ngClass]="item().paymentStatus">{{item().paymentStatus}}</span>
+            </p>
+            <p><span class="label">Đã thanh toán:</span> <span class="group-val">{{item().paidAmount |
+                currency:'VND'}}</span></p>
+            <p><span class="label">Còn lại:</span> <span class="group-val price-due">{{item().balanceDue |
+                currency:'VND'}}</span></p>
+            @if(item().paymentDeadline){
+            <p><span class="label">Hạn thanh toán:</span> <span class="group-val">{{item().paymentDeadline |
+                date:'dd/MM/yyyy HH:mm'}}</span></p>
+            }
+          </div>
+
+          <!-- Booking Info -->
+          <div class="detail-group">
+            <h4>Thông tin đặt phòng</h4>
+            <p><span class="label">Ngày đặt:</span> <span class="group-val">{{item().createdAt |
+                date:'dd/MM/yyyy'}}</span></p>
+            <p><span class="label">Trạng thái:</span>
+              <span class="status-badge" [ngClass]="item().bookingStatus">{{item().bookingStatus}}</span>
+            </p>
+            <p><span class="label">Chính sách hủy:</span>
+              <span class="group-val cancellation-rule" [title]="item().cancellationDisplayText || 'Không có'">
+                <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="cancellation-text">{{item().cancellationDisplayText || 'Không có'}}</span>
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Rooms list -->
+        @if(item().details && item().details.length > 0){
+        <div class="rooms-section">
+          <h4>Chi tiết phòng ({{item().details.length}} phòng)</h4>
+          <div class="room-list">
+            @for (item of item().details; track $index) {
+            <div class="room-item">
+              <div class="room-header">
+                <span class="room-name">{{$index + 1}}. {{item.roomTypeName}}</span>
+                @if(item.roomNumber){
+                <span class="room-number">Phòng: {{item.roomNumber}}</span>
+                }
+              </div>
+              <div class="room-body">
+                <span class="room-guests">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    style="vertical-align: text-bottom; margin-right: 4px;">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                  {{item.adults}} Người lớn, {{item.children}} Trẻ em
+                </span>
+                <span class="room-price">{{item.price | currency:'VND'}}</span>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}

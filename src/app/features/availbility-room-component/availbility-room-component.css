@@ -1,0 +1,201 @@
+:host {
+    display: block;
+    font-family: 'Inter', sans-serif;
+}
+
+.availbility-container {
+    padding: 24px;
+    background-color: var(--dark-2);
+    border-radius: 16px;
+    border: 1px solid rgba(247, 242, 234, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    color: var(--text-mid);
+    transition: all 0.3s ease;
+}
+
+.availbility-container:hover {
+    border-color: rgba(201, 168, 76, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    background-color: var(--dark-3);
+}
+
+.room-type-thumb {
+    overflow: hidden;
+}
+
+.room-type-thumb img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.6s ease;
+}
+
+.availbility-container:hover .room-type-thumb img {
+    transform: scale(1.03);
+}
+
+.room-type-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.room-type-name {
+    margin-bottom: 12px !important;
+    font-size: 26px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    color: var(--cream);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.room-type-desc {
+    font-size: 14px;
+    color: var(--text-soft);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.room-type-amenities {
+    margin-bottom: 16px;
+}
+
+.room-type-arrangements {
+    margin-bottom: 8px;
+}
+
+.badge-primary {
+    background-color: rgba(201, 168, 76, 0.08);
+    color: var(--gold);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+.badge-primary strong {
+    color: var(--cream);
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.badge-primary i {
+    color: var(--gold-light);
+    font-size: 14px;
+}
+
+.full-amenities {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background-color: var(--dark);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.full-amenities.show {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.amenity-item {
+    padding: 4px 8px;
+    background-color: var(--dark-3);
+    border-radius: 6px;
+}
+
+.amenity-dot {
+    height: 6px;
+    width: 6px;
+    background-color: var(--gold);
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.amenity-name {
+    font-size: 13px;
+    color: var(--text-soft);
+    font-family: 'Inter', sans-serif;
+}
+
+.view-all-btn {
+    text-decoration: none;
+    color: var(--gold-light);
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    padding: 0;
+    margin-left: 4px;
+}
+
+.view-all-btn:hover {
+    text-decoration: underline;
+    color: var(--gold);
+}
+
+.room-book-info {
+    background-color: var(--dark);
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.price-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gold-light);
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.price-note {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-family: 'Inter', sans-serif;
+}
+
+.people-quantity {
+    color: var(--cream);
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.people-quantity i {
+    color: var(--gold);
+}
+
+.cancellation-policy {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+}
+
+.policy-desc {
+    font-size: 13px;
+    color: var(--error);
+    font-family: 'Inter', sans-serif;
+    background-color: rgba(226, 96, 96, 0.08);
+    padding: 10px 16px;
+    border-radius: 8px;
+    border-left: 3px solid var(--error);
+    margin-bottom: 0;
+}
+
+.extra-people-row {
+    background-color: var(--dark-3);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px dashed rgba(201, 168, 76, 0.3);
+}

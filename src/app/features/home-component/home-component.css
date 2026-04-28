@@ -1,0 +1,165 @@
+.home-body {
+    background-color: var(--cream);
+}
+
+#heroImageCarousel {
+    margin: 50px;
+    margin-top: 0px;
+    box-shadow:
+        0 0 10px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(0, 0, 0, 0.2),
+        0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+#heroImageCarousel .carousel-item {
+    height: 500px;
+}
+
+#heroImageCarousel .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hotel-logo-container {
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    z-index: 1000;
+}
+
+.hotel-logo {
+    width: 120px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+.hotel-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#hotel-desc {
+    padding: 50px 80px;
+    background-color: var(--dark-2);
+}
+
+.desc-title {
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 900;
+    font-optical-sizing: auto;
+    margin-bottom: 10px;
+    color: var(--gold);
+}
+
+.hotel-desc-text {
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+    font-size: 17px;
+    color: #555;
+    line-height: 1.5;
+    color: var(--text-soft);
+}
+
+.hotel-desc-img img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.room-slider-container {
+    padding: 50px 40px;
+}
+
+.room-slider-title {
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 900;
+    font-optical-sizing: auto;
+    margin-bottom: 40px;
+}
+
+.room-type-card {
+    padding-left: 50px;
+    padding-right: 30px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 50px;
+}
+
+#roomTypeCarousel .carousel-control-next {
+    justify-content: flex-end;
+}
+
+
+#roomTypeCarousel .carousel-control-prev {
+    justify-content: flex-start;
+}
+
+.prev-icon-container,
+.next-icon-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: brightness(0) saturate(100%) invert(70%) sepia(90%) saturate(900%) hue-rotate(10deg) brightness(95%) contrast(110%);
+    opacity: 1;
+}
+
+.room-type-info {
+    text-align: center;
+}
+
+.room-type-name {
+    margin-bottom: 50px;
+}
+
+.rt-name-main {
+    font-family: 'Inter', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.room-type-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #555;
+    line-height: 2;
+}
+
+.room-type-img img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.detail-cta {
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+    background-color: var(--gold);
+    color: var(--dark-4);
+}
+
+.icon-title-left,
+.icon-title-right {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}

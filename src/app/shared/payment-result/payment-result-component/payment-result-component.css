@@ -1,0 +1,144 @@
+.payment-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  /* Màu hệ thống light */
+  padding: 2rem 1rem;
+}
+
+.payment-card {
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  /* Premium shadow */
+  background: white;
+}
+
+.row.h-100 {
+  min-height: 60vh;
+}
+
+.image-wrapper {
+  position: relative;
+  min-height: 300px;
+  /* Cho mobile */
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .image-wrapper {
+    min-height: 100%;
+  }
+}
+
+.image-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.img-placeholder-text {
+  color: #adb5bd;
+  font-weight: 500;
+  z-index: 1;
+}
+
+.content-wrapper {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (min-width: 992px) {
+  .content-wrapper {
+    padding: 4rem 5rem;
+  }
+}
+
+.status-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.status-icon.success {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-icon.success i {
+  color: #0f5132;
+}
+
+.status-icon.error {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.status-icon.error i {
+  color: #842029;
+}
+
+.status-title {
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.status-desc {
+  color: #6c757d;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.action-buttons .btn {
+  padding: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.action-buttons .btn-dark {
+  background-color: #212529;
+  border: none;
+}
+
+.action-buttons .btn-dark:hover {
+  background-color: #343a40;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 37, 41, 0.2);
+}
+
+.action-buttons .btn-outline-secondary {
+  border: 1px solid #dee2e6;
+  color: #495057;
+}
+
+.action-buttons .btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+  border-color: #ced4da;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}

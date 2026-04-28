@@ -1,0 +1,106 @@
+@if (roomType()) {
+<app-side-menu-component></app-side-menu-component>
+<app-booking-button-component></app-booking-button-component>
+<div class="container-fluid pub-room-detail-container">
+
+  <!-- Hàng đầu tiên -->
+  <div class="row-1">
+    <div class="col-slider">
+      <div class="slider-container">
+        @if (images().length > 0) {
+        <div class="slider-main-image">
+          <button class="slider-btn prev" (click)="prevImage()"><i class="fa-solid fa-chevron-left"></i></button>
+          <img [src]="images()[currentImageIndex]" [alt]="roomType()?.name" />
+          <button class="slider-btn next" (click)="nextImage()"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="slider-thumbnails">
+          @for (img of images(); track img; let i = $index) {
+          <img [src]="img" [class.active]="i === currentImageIndex" (click)="setCurrentImage(i)" />
+          }
+        </div>
+        } @else {
+        <div class="no-image">
+          <img src="https://placehold.co/600x400" alt="No image">
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="col-info">
+      <h1 class="room-title">{{ roomType()?.name }}</h1>
+      <div class="info-grid">
+        <div class="info-item full-width">
+          <i class="fa-solid fa-user-group icon"></i>
+          <span class="text">{{ roomType()?.maxAdults }} người lớn, {{ roomType()?.maxChildren }} trẻ em (Tổng chứa: {{
+            roomType()?.maxOccupancy }})</span>
+        </div>
+
+        <div class="info-item">
+          <i class="fa-solid fa-ruler-combined icon"></i>
+          <span class="text">{{ roomType()?.areaSize }} m<sup>2</sup></span>
+        </div>
+        <div class="info-item">
+          <i class="fa-solid fa-bed icon"></i>
+          <span class="text">{{ roomType()?.bedTypeName }} - {{ roomType()?.bedArrangement }}</span>
+        </div>
+
+        <div class="info-item">
+          <i class="fa-solid fa-panorama icon"></i>
+          <span class="text">{{ roomType()?.viewType }}</span>
+        </div>
+        <div class="info-item">
+          @if (roomType()?.extraBedAllowed) {
+          <i class="fa-solid fa-plus icon"></i>
+          <span class="text">Cho phép thêm giường</span>
+          } @else {
+          <i class="fa-solid fa-ban icon"></i>
+          <span class="text">Không thêm giường</span>
+          }
+        </div>
+
+        <div class="info-item">
+          <i class="fa-solid fa-smoking icon"></i>
+          <span class="text">{{ roomType()?.smokingPolicy }}</span>
+        </div>
+        <div class="info-item">
+          <i class="fa-solid fa-bath icon"></i>
+          <span class="text">{{ roomType()?.bathroomType }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hàng 2: Description -->
+  <div class="row-2 description-section">
+    <p class="description-text">{{ roomType()?.description }}</p>
+  </div>
+
+  <!-- Hàng 3: Amenities -->
+  <div class="feature-section">
+    <h3><i class="fa-solid fa-spa icon-heading"></i> Tiện nghi phòng</h3>
+    <div class="feature-grid">
+      @for (item of amenitiesList(); track item) {
+      <div class="feature-item">
+        <i class="fa-solid fa-check icon-check"></i>
+        <span>{{ item }}</span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Hàng 4: Services -->
+  <div class="feature-section">
+    <h3><i class="fa-solid fa-concierge-bell icon-heading"></i> Dịch vụ đi kèm</h3>
+    <div class="feature-grid">
+      @for (item of servicesList(); track item) {
+      <div class="feature-item">
+        <i class="fa-solid fa-star icon-check"></i>
+        <span>{{ item }}</span>
+      </div>
+      }
+    </div>
+  </div>
+
+</div>
+<app-footer-component></app-footer-component>
+}

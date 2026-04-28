@@ -1,0 +1,98 @@
+<div class="availbility-container mb-4">
+    <div class="row">
+        <div class="col-4 room-type-thumb">
+            @if(roomType().thumbnail){
+            <img [src]="roomType().thumbnail" alt="Room Thumbnail" class="img-fluid rounded">
+            }@else {
+            <img src="https://placehold.co/600x400">
+            }
+        </div>
+        <div class="col-8 room-type-info">
+            <h3 class="room-type-name">{{ roomType().name }}</h3>
+            <p class="room-type-desc"> {{ roomType().description }} </p>
+            <div class="room-type-amenities">
+                <span class="badge badge-primary">
+                    <i class="fa-brands fa-ethereum"></i> WiFi
+                </span>
+                <span class="badge badge-primary">
+                    <i class="fa-brands fa-ethereum"></i> AC
+                </span>
+                <span class="badge badge-primary">
+                    <i class="fa-brands fa-ethereum"></i> TV
+                </span>
+                <button type="button" class="btn btn-link view-all-btn" (click)="toggleAmenities()">
+                    Xem tất cả tiện ích</button>
+                <div class="full-amenities" [class.show]="showAllAmenities()">
+                    @for (item of roomType().amenities.split(','); track $index) {
+                    <div class="d-inline-flex align-items-center amenity-item">
+                        <span class="amenity-dot"></span>
+                        <span class="amenity-name">{{item}}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="room-type-arrangements">
+                <span class="badge badge-primary">
+                    <strong>Kiểu giường:</strong> {{roomType().bedTypeName}}, {{roomType().bedArrangement}}
+                </span>
+                <span class="badge badge-primary">
+                    <strong>Diện tích:</strong> {{roomType().areaSize}} m<sup>2</sup>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            @if(cancellationPolicy()){
+            <div class="cancellation-policy">
+                <p class="policy-desc">{{ cancellationPolicy()?.displayText }}</p>
+            </div>
+            }
+        </div>
+
+        <form class="col-8 mt-2" [formGroup]="form">
+            <div class="row room-book-info align-items-center">
+                <div class="room-price col-5 d-flex flex-column align-items-center gap-2">
+                    <div class="price-value">{{ form.value.price | currency:'VND' }}</div>
+                    <div class="price-note">1 phòng</div>
+                </div>
+                <div class="people-quantity col-4 d-flex align-items-center">
+                    <i class="fa-solid fa-people-group"></i>
+                    <span class="ms-2">{{ form.value.peopleQuantity }} người lớn</span>
+                    <button type="button" class="btn btn-link btn-sm ms-2 p-0 text-decoration-none text-secondary"
+                        (click)="toggleExtraPeople()">
+                        <i class="fa-solid fa-circle-plus fs-5"></i>
+                    </button>
+                </div>
+                <div class="room-quantity-select col-3">
+                    <tui-textfield tuiChevron tuiTextfieldSize="m" [tuiTextfieldCleaner]="false">
+                        <input tuiSelect formControlName="roomQuantity" />
+                        <tui-data-list-wrapper *tuiTextfieldDropdown new [items]="roomQuantities()" />
+                    </tui-textfield>
+                </div>
+            </div>
+
+            @if(showExtraPeople()) {
+            <div class="row extra-people-row mt-3">
+                <div class="col-5"></div>
+                @if(maxExtraAdultsAllowed()>0){
+                <div class="col-4">
+                    <span class="d-block mb-1 text-white fw-medium" style="font-size: 0.85rem;">Thêm người lớn</span>
+                    <tui-textfield tuiChevron tuiTextfieldSize="m" [tuiTextfieldCleaner]="false">
+                        <input tuiSelect formControlName="extraAdult" />
+                        <tui-data-list-wrapper *tuiTextfieldDropdown new [items]="extraAdultOptions()" />
+                    </tui-textfield>
+                </div>
+                }
+                <div class="col-3">
+                    <span class="d-block mb-1 text-white fw-medium" style="font-size: 0.85rem;">Thêm trẻ em</span>
+                    <tui-textfield tuiChevron tuiTextfieldSize="m" [tuiTextfieldCleaner]="false">
+                        <input tuiSelect formControlName="extraChild" />
+                        <tui-data-list-wrapper *tuiTextfieldDropdown new [items]="extraChildOptions()" />
+                    </tui-textfield>
+                </div>
+            </div>
+            }
+        </form>
+    </div>
+</div>

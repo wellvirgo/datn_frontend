@@ -1,0 +1,242 @@
+<app-side-menu-component></app-side-menu-component>
+<div style="background-color: var(--cream);" class="py-5">
+    <div class="container">
+        <h1 class="title">Đặt phòng</h1>
+        <div class="sub-title">Kết quả tìm kiếm phòng</div>
+
+        <div class="search-box mb-5 shadow-sm">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-4">
+                    <tui-textfield tuiTextfieldSize="l" class="w-100" [tuiTextfieldCleaner]="false">
+                        <label tuiLabel>Ngày nhận phòng</label>
+                        <input tuiInputDate [(ngModel)]="checkIn" />
+                        <tui-calendar *tuiTextfieldDropdown></tui-calendar>
+                    </tui-textfield>
+                </div>
+                <div class="col-md-4">
+                    <tui-textfield tuiTextfieldSize="l" class="w-100" [tuiTextfieldCleaner]="false">
+                        <label tuiLabel>Ngày trả phòng</label>
+                        <input tuiInputDate [(ngModel)]="checkOut" />
+                        <tui-calendar *tuiTextfieldDropdown></tui-calendar>
+                    </tui-textfield>
+                </div>
+                <div class="col-md-4">
+                    <button tuiButton size="l" class="w-100 search-btn" (click)="loadAvailabilityResults()">
+                        Tìm kiếm phòng
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <tui-loader [showLoader]="isLoading()" size="l">
+            @if(availabilityResults().length == 0 && !isLoading()){
+            <div class="no-result">
+                <h3>Không tìm thấy phòng nào phù hợp</h3>
+                <p>Vui lòng thử lại với ngày khác.</p>
+            </div>
+            }@else {
+            <div class="room-list row g-4">
+                <div class="col-lg-9">
+                    @for (item of availabilityResults(); track $index) {
+                    <app-availbility-room-component [roomType]="item" [cancellationPolicy]="cancellationPolicy()"
+                        (roomQuantityChange)="changeBookingRoom($event)"></app-availbility-room-component>
+                    }
+                </div>
+                <div class="col-lg-3 align-self-start sticky-summary-container">
+                    <div class="booking-summary-card">
+                        <h4 class="summary-title">Tóm tắt đặt phòng</h4>
+
+                        @if(totalRooms() > 0 ){
+                        <div class="booking-preview">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="summary-label">Số lượng phòng:</span>
+                                <span class="summary-value">{{ totalRooms() }} phòng</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="summary-label">Thuê trong:</span>
+                                <span class="summary-value">{{ nights() }} đêm</span>
+                            </div>
+                            <hr class="summary-divider">
+                            <div class="d-flex justify-content-between mb-4 align-items-center">
+                                <span class="summary-label fw-bold" style="font-size: 16px;">Tổng cộng:</span>
+                                <span class="room-price">{{ totalPrice() | currency:'VND' }}</span>
+                            </div>
+                        </div>
+                        } @else {
+                        <div class="text-center" [ngClass]="{'py-4': totalRooms()>0, 'mb-3': totalRooms()>0}">
+                            <span class="text-white" style="font-size: 14px;">Chưa có phòng nào được chọn.</span>
+                        </div>
+                        }
+
+                        <button type="button" tuiButton size="l" class="booking-btn w-100" [disabled]="totalRooms()<=0"
+                            (click)="book()">
+                            Tiến hành đặt phòng
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            }
+        </tui-loader>
+    </div>
+</div>
+
+<app-footer-component></app-footer-component>
+
+@if(isModalOpen()) {
+<div class="fullscreen-modal"
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1200; background-color: var(--cream); display: flex; flex-direction: column;">
+    <div class="modal-header d-flex justify-content-between align-items-center p-4 border-bottom shadow-sm"
+        style="background-color: var(--cream);">
+        <h2 class="m-0 text-dark" style="font-weight: 800;">Xác nhận đặt phòng</h2>
+        <button type="button" class="btn btn-light border-0 fs-4 text-secondary hover-dark"
+            style="background-color: var(--cream);" (click)="closeBookingModal()">&times;</button>
+    </div>
+
+    <div class="modal-body p-4" style="height: calc(100vh - 85px); overflow-y: auto; background-color: var(--cream);">
+        <div class="container">
+            <div class="d-flex justify-content-center align-items-center mb-5 mt-3">
+                <div [class]="currentStep() >= 1 ? 'step-indicator text-white px-4 py-2 rounded-pill fw-bold shadow-sm' : 'step-indicator text-white px-4 py-2 rounded-pill fw-bold'"
+                    [style.background-color]="currentStep() >= 1 ? 'var(--gold, #007bff)' : 'var(--dark-4)'"
+                    style="transition: all 0.3s ease;">
+                    1. Thông tin phòng
+                </div>
+                <div class="step-line mx-3"
+                    style="width: 60px; height: 4px; background-color: #dee2e6; border-radius: 2px;"></div>
+                <div [class]="currentStep() === 2 ? 'step-indicator text-white px-4 py-2 rounded-pill fw-bold shadow-sm' : 'step-indicator text-white px-4 py-2 rounded-pill fw-bold'"
+                    [style.background-color]="currentStep() === 2 ? 'var(--gold, #007bff)' : 'var(--dark-4)'"
+                    style="transition: all 0.3s ease;">
+                    2. Thông tin khách hàng
+                </div>
+            </div>
+
+            @if(currentStep() === 1) {
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <h3 class="mb-4 text-dark fw-bold">Phòng đã chọn</h3>
+                    @for(room of selectedRooms(); track room.roomTypeId) {
+                    <div class="card mb-4 shadow-sm border-0" style="border-radius: 16px;">
+                        <div class="card-body p-4">
+                            <h5 class="card-title fs-4 mb-4 fw-bold" style="color: var(--gold);">{{
+                                getRoomName(room.roomTypeId) }}
+                            </h5>
+                            <div class="row mt-3">
+                                <div class="col-6 mb-3">
+                                    <div class="text-muted small text-uppercase fw-bold mb-1">Số lượng phòng</div>
+                                    <div class="fw-bold fs-5 text-dark">{{ room.roomQuantity }}</div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="text-muted small text-uppercase fw-bold mb-1">Giá mỗi phòng</div>
+                                    <div class="fw-bold fs-5 text-danger">{{ room.price | currency:'VND' }}</div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="text-muted small text-uppercase fw-bold mb-1">Người lớn</div>
+                                    <div class="fw-bold text-dark fs-6">{{ room.adultsPerRoom }}</div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="text-muted small text-uppercase fw-bold mb-1">Trẻ em</div>
+                                    <div class="fw-bold text-dark fs-6">{{ room.childrenPerRoom }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <div class="card shadow-sm border-0 sticky-top" style="top: 20px; border-radius: 16px;">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4 fw-bold text-dark">Thông tin đặt phòng</h4>
+
+                            <div class="d-flex justify-content-between mb-3 align-items-center">
+                                <span class="text-muted fw-semibold">Nhận phòng:</span>
+                                <span class="fw-bold text-dark fs-6">{{ checkIn.toString() }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3 align-items-center">
+                                <span class="text-muted fw-semibold">Trả phòng:</span>
+                                <span class="fw-bold text-dark fs-6">{{ checkOut.toString() }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3 align-items-center">
+                                <span class="text-muted fw-semibold">Số đêm:</span>
+                                <span class="fw-bold text-dark fs-6">{{ nights() }} đêm</span>
+                            </div>
+                            <hr class="my-4" style="border-color: #dee2e6;">
+                            <div class="d-flex justify-content-between mb-3 align-items-center">
+                                <span class="text-muted fw-semibold">Tổng số phòng:</span>
+                                <span class="fw-bold text-dark fs-5">{{ totalRooms() }} phòng</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-5 mt-2 align-items-center">
+                                <span class="text-muted fs-5 fw-bold">Tổng cộng:</span>
+                                <span class="fw-bold fs-3 text-danger">{{ totalPrice() | currency:'VND' }}</span>
+                            </div>
+
+                            <button tuiButton size="l" class="w-100 py-3 rounded-3 shadow-sm"
+                                style="background-color: var(--gold);" (click)="nextStep()">
+                                Tiếp tục
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+
+            @if(currentStep() === 2) {
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="card shadow-lg border-0" style="border-radius: 20px;">
+                        <tui-loader [showLoader]="isBooking()" size="l" [overlay]="true">
+                            <form #confirmForm="ngForm" (ngSubmit)="confirmBooking()">
+                                <div class="card-body p-5">
+                                    <h3 class="mb-5 text-center fw-bold text-dark">Thông tin người đặt</h3>
+
+                                    <div class="mb-4 text-start">
+                                        <label class="form-label text-muted fw-bold mb-2">Họ và tên</label>
+                                        <input type="text"
+                                            class="form-control form-control-lg bg-light border-0 shadow-sm px-4"
+                                            name="customerName" [(ngModel)]="customerName" #nameCtrl="ngModel" required
+                                            placeholder="Nhập họ và tên" style="border-radius: 12px; height: 56px;">
+                                        @if(nameCtrl.invalid && nameCtrl.touched){
+                                        <small class="text-danger small" style="margin-top: 5px;">
+                                            Họ và tên là bắt buộc.
+                                        </small>
+                                        }
+                                    </div>
+
+                                    <div class="mb-5 text-start">
+                                        <label class="form-label text-muted fw-bold mb-2">Số điện thoại</label>
+                                        <input type="tel"
+                                            class="form-control form-control-lg bg-light border-0 shadow-sm px-4"
+                                            name="customerPhone" [(ngModel)]="customerPhone" #phoneCtrl="ngModel"
+                                            required placeholder="Nhập số điện thoại"
+                                            style="border-radius: 12px; height: 56px;">
+                                        @if(phoneCtrl.invalid && phoneCtrl.touched){
+                                        <small class="text-danger small" style="margin-top: 5px;">
+                                            Số điện thoại là bắt buộc.
+                                        </small>
+                                        }
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+                                        <button type="button"
+                                            class="btn btn-outline-secondary px-4 py-2 fw-bold text-uppercase"
+                                            style="border-radius: 10px; letter-spacing: 0.5px;" (click)="prevStep()">
+                                            Quay lại
+                                        </button>
+                                        <button type="submit" tuiButton size="m" [disabled]="confirmForm.invalid"
+                                            class="px-5 py-2 shadow-sm text-uppercase fw-bold"
+                                            style="border-radius: 10px; letter-spacing: 0.5px;"
+                                            style="background-color: var(--gold);">
+                                            Xác nhận đặt phòng
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tui-loader>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+}

@@ -1,0 +1,8 @@
+<div class="d-flex justify-content-between align-items-center">
+    <span style="color: #6c86e2; font-weight: 600;">Tổng số: {{totalItems()}}</span>
+
+    @if(totalPages()>=1){
+    <tui-pagination [index]="currentPage() -1" [length]="totalPages()"
+        (indexChange)="goToPage($event)"></tui-pagination>
+    }
+</div>

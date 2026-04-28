@@ -1,0 +1,150 @@
+.bg {
+    background: var(--dark);
+}
+
+.brand-icon {
+    width: 44px;
+    height: 44px;
+    border: 1.5px solid var(--gold);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.diamond {
+    width: 16px;
+    height: 16px;
+    background: var(--gold);
+    transform: rotate(45deg);
+}
+
+.login-container {
+    padding: 50px 16px;
+    border: 2px solid rgba(201, 168, 76, 0.2);
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(201, 168, 76, 0.08);
+}
+
+@media (min-width: 768px) {
+    .login-container {
+        padding: 100px 200px;
+    }
+}
+
+.brand-panel {
+    background: var(--dark-3);
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(201, 168, 76, 0.15);
+    justify-content: space-between;
+    align-items: start;
+    position: relative;
+}
+
+.brand-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    color: #fff;
+    line-height: 1.1;
+}
+
+.brand-tag {
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 400;
+    margin-top: 4px;
+}
+
+.brand-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    line-height: 1.25;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.brand-desc {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-mid);
+    font-weight: 300;
+}
+
+.brand-features {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.feature-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.feature-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+}
+
+.feature-text {
+    font-size: 13px;
+    color: var(--text-mid);
+    letter-spacing: 0.02em;
+}
+
+.login-panel {
+    padding: 56px 60px;
+    background: var(--dark-2);
+}
+
+.section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.section-sub {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    font-weight: 400;
+}
+
+.login-input {
+    background: var(--gold-light);
+    color: var(--dark-4);
+}
+
+input.login-input[readonly] {
+    background-color: var(--gold-light) !important;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.login-btn {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}

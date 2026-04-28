@@ -1,0 +1,312 @@
+<div class="das-booking-layout">
+  <div class="das-booking-container">
+    <div class="header-actions">
+      <h2 style="margin: 0 0 20px 0; color: var(--das-role-text-primary, #1C2F42); font-size: 20px; font-weight: 600;">
+        Danh sách booking
+      </h2>
+      <div class="filters-grid">
+        <div class="form-group">
+          <label>Mã booking</label>
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" class="search-input" placeholder="Nhập mã booking..." [ngModel]="code()"
+              (ngModelChange)="onCodeChange($event)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Trạng thái booking</label>
+          <div class="custom-select-wrapper">
+            <select class="form-control custom-select" [ngModel]="bookingStatus()"
+              (ngModelChange)="bookingStatus.set($event); currentPage.set(1)">
+              <option value="" [selected]="true">Tất cả</option>
+              <option value="PENDING_PAYMENT">Chờ thanh toán</option>
+              <option value="CONFIRMED">Đã xác nhận</option>
+              <option value="CHECK_IN">Đã check-in</option>
+              <option value="CHECK_OUT">Đã check-out</option>
+              <option value="CANCELED">Đã hủy</option>
+              <option value="EXPIRED">Đã hết hạn</option>
+            </select>
+            <i class="fa-solid fa-chevron-down custom-select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Trạng thái thanh toán</label>
+          <div class="custom-select-wrapper">
+            <select class="form-control custom-select" [ngModel]="paymentStatus()"
+              (ngModelChange)="paymentStatus.set($event); currentPage.set(1)">
+              <option value="" [selected]="true">Tất cả</option>
+              <option value="UNPAID">Chưa thanh toán</option>
+              <option value="PAID">Đã thanh toán</option>
+              <option value="PARTIAL">Thanh toán một phần</option>
+              <option value="REFUNDED">Đã hoàn tiền</option>
+            </select>
+            <i class="fa-solid fa-chevron-down custom-select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Từ ngày</label>
+          <div class="search-box">
+            <tui-textfield>
+              <input tuiInputDate [ngModel]="startDate()" (ngModelChange)="startDate.set($event); currentPage.set(1)"
+                placeholder="yyyy-mm-dd" class="custom-input-date">
+              <tui-calendar *tuiTextfieldDropdown></tui-calendar>
+            </tui-textfield>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Đến ngày</label>
+          <div class="search-box">
+            <tui-textfield>
+              <input tuiInputDate [ngModel]="endDate()" (ngModelChange)="endDate.set($event); currentPage.set(1)"
+                class="custom-input-date" placeholder="yyyy-mm-dd">
+              <tui-calendar *tuiTextfieldDropdown></tui-calendar>
+            </tui-textfield>
+          </div>
+        </div>
+
+        <div class="form-action">
+          <button class="btn-clear" (click)="clearFilters()" title="Xóa bộ lọc">
+            <i class="fa-solid fa-filter-circle-xmark"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="das-booking-content">
+      <ag-grid-angular class="das-booking-table" [columnDefs]="colDefs" [rowData]="bookingsResource.value()?.items"
+        [pagination]="false" [loading]="bookingsResource.isLoading()" [theme]="theme"
+        [autoSizeStrategy]="autoSizeStrategy"></ag-grid-angular>
+    </div>
+
+    <app-pagination-component [currentPage]="currentPage()" [totalPages]="bookingsResource.value()?.totalPages || 0"
+      [totalItems]="bookingsResource.value()?.total ?? 0" (nextPage)="onPageChange($event)"></app-pagination-component>
+
+  </div>
+</div>
+
+<!-- Xem chi tiết modal -->
+<div class="modal-overlay" [class.show]="isViewModalOpen()">
+  <div class="modal-container" [class.slide-in]="isViewModalOpen()">
+    <div class="modal-header">
+      <h2 class="modal-title">Chi tiết booking {{selectedBooking()?.bookingCode}}</h2>
+      <button class="close-btn" (click)="closeViewModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    @if(isLoadingSelectedBooking()){
+    <div class="spinner-grow text-primary loading-spinner" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    }@else {
+    @if (selectedBooking()) {
+    <div class="flex-grow-1" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+      <div class="modal-body">
+        <!-- Tabs -->
+        <div class="modal-tabs">
+          @for (tab of viewTabs; track tab.id) {
+          <button type="button" class="tab-btn" [class.active]="activeViewTab() === tab.id"
+            (click)="setViewTab(tab.id)">
+            <i class="fa-solid {{tab.icon}}"></i>
+            {{tab.title}}
+          </button>
+          }
+        </div>
+
+        <div class="modal-content-area cus-scroll">
+          <!-- Tab 0: Thông tin chung -->
+          @if (activeViewTab() === 0) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Thông tin chung</h3>
+            <div class="modal-row-2">
+              <div class="modal-group">
+                <label>Mã booking</label>
+                <div class="modal-control">{{selectedBooking()?.bookingCode}}</div>
+              </div>
+              <div class="modal-group">
+                <label>Ngày đặt</label>
+                <div class="modal-control">{{selectedBooking()?.createdAt | date:'dd/MM/yyyy'}}</div>
+              </div>
+            </div>
+
+            <div class="modal-row-2">
+              <div class="modal-group">
+                <label>Trạng thái booking</label>
+                <div class="modal-control">{{formatBookingStatus(selectedBooking()?.bookingStatus || '')}}</div>
+              </div>
+              <div class="modal-group">
+                <label>Tài khoản đặt phòng</label>
+                <div class="modal-control">{{selectedBooking()?.accountEmail || 'Khách vãng lai'}}</div>
+              </div>
+            </div>
+
+            <div class="modal-row-2">
+              <div class="modal-group">
+                <label>Tên khách hàng</label>
+                <div class="modal-control">{{selectedBooking()?.customerName}}</div>
+              </div>
+              <div class="modal-group">
+                <label>Số điện thoại</label>
+                <div class="modal-control">{{selectedBooking()?.customerPhone}}</div>
+              </div>
+            </div>
+
+            <div class="modal-row-2">
+              <div class="modal-group">
+                <label>Ngày check-in</label>
+                <div class="modal-control">{{selectedBooking()?.checkInDate | date:'dd/MM/yyyy'}}</div>
+              </div>
+              <div class="modal-group">
+                <label>Ngày check-out</label>
+                <div class="modal-control">{{selectedBooking()?.checkOutDate | date:'dd/MM/yyyy'}}</div>
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- Tab 1: Thanh toán-->
+          @if (activeViewTab() === 1) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Thông tin thanh toán</h3>
+
+            <div class="modal-row-2">
+              <div class="modal-group">
+                <label>Trạng thái thanh toán</label>
+                <div class="modal-control">{{formatPaymentStatus(selectedBooking()?.paymentStatus || '')}}</div>
+              </div>
+              <div class="modal-group">
+                <label>Hạn thanh toán</label>
+                <div class="modal-control">{{selectedBooking()?.paymentDeadline ? (selectedBooking()?.paymentDeadline |
+                  date:'dd/MM/yyyy HH:mm') : 'Không có'}}</div>
+              </div>
+            </div>
+
+            <div class="modal-row-2">
+              <div class="modal-group">
+                <label>Tổng tiền</label>
+                <div class="modal-control" style="color: var(--das-primary-ocean); font-weight: 600;">
+                  {{formatVND(selectedBooking()!.totalAmount)}}</div>
+              </div>
+              <div class="modal-group">
+                <label>Số tiền đặt cọc cần trả</label>
+                <div class="modal-control">{{formatVND(selectedBooking()!.depositAmount)}}</div>
+              </div>
+            </div>
+
+            <div class="modal-row-2">
+              <div class="modal-group">
+                <label>Đã thanh toán</label>
+                <div class="modal-control" style="color: var(--das-semantic-success, #22A06B);">
+                  {{formatVND(selectedBooking()!.paidAmount)}}</div>
+              </div>
+              <div class="modal-group">
+                <label>Còn lại phải trả</label>
+                <div class="modal-control" style="color: var(--das-semantic-danger, #EF4444);">
+                  {{formatVND(selectedBooking()!.balanceDue)}}</div>
+              </div>
+            </div>
+
+            <div class="modal-group" style="margin-top: 24px;">
+              <h4 style="margin: 0 0 12px 0; color: var(--das-role-text-primary); font-size: 16px; font-weight: 500;">
+                Chính sách hủy đổi
+              </h4>
+              <div class="modal-control" style="min-height: 80px; white-space: pre-line;">
+                {{selectedBooking()?.cancellationDisplayText || 'Chưa có thông tin'}}
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- Tab 2: Phòng đã đặt-->
+          @if (activeViewTab() === 2) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Phòng đã đặt</h3>
+            @if (selectedBooking()?.details?.length) {
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              @for (detail of selectedBooking()?.details; track detail.id) {
+              <div
+                style="border: 1px solid var(--das-border-subtle, #E2E8F0); border-radius: 8px; padding: 16px; background-color: var(--das-role-card, #FFFFFF);">
+                <h4 style="margin: 0 0 12px 0; color: var(--das-role-text-primary); font-size: 16px; font-weight: 600;">
+                  {{detail.roomTypeName}} <span style="font-weight: 400; color: var(--das-role-text-secondary);">
+                    (Số phòng: {{detail.roomNumber || 'Chưa xếp'}})</span>
+                </h4>
+                <div
+                  style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 14px; color: var(--das-role-text-secondary);">
+                  <div style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-person"
+                      style="width: 16px;"></i> Người lớn: {{detail.adults}}</div>
+                  <div style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-child"
+                      style="width: 16px;"></i> Trẻ em: {{detail.children}}</div>
+                  <div style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-money-bill"
+                      style="width: 16px;"></i> Giá: {{formatVND(detail.price)}}</div>
+                </div>
+              </div>
+              }
+            </div>
+            } @else {
+            <div class="empty-state"
+              style="padding: 32px 0; display: flex; flex-direction: column; align-items: center; color: var(--das-neutral-steel);">
+              <i class="fa-solid fa-bed" style="font-size: 32px; margin-bottom: 12px;"></i>
+              <p>Không có thông tin phòng.</p>
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Tab 3: Lịch sử thanh toán -->
+          @if (activeViewTab() === 3) {
+          <div class="tab-pane fade-in">
+            <h3 class="pane-title">Lịch sử thanh toán</h3>
+            @if (selectedBooking()?.paymentHistory?.length) {
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              @for (payment of selectedBooking()?.paymentHistory; track payment.transactionNo) {
+              <div
+                style="border: 1px solid var(--das-border-subtle, #E2E8F0); border-radius: 8px; padding: 16px; background-color: var(--das-role-card, #FFFFFF);">
+                <div class="d-flex justify-content-between align-items-center flex-wrap" style="margin-bottom: 16px;">
+                  <h4 style="margin: 0; color: var(--das-role-text-primary); font-size: 15px; font-weight: 600;">
+                    Mã giao dịch: {{payment.transactionNo}}
+                  </h4>
+                  <span class="table-badge" [class.pay-success]="payment.status === 'SUCCESS'"
+                    [class.pay-failed]="payment.status === 'FAILED'" [class.pay-pending]="payment.status === 'PENDING'">
+                    {{payment.status === 'SUCCESS'
+                    ? 'Thành công'
+                    : (payment.status === 'FAILED' ? 'Thất bại' :'Chờ thanh toán')}}
+                  </span>
+                </div>
+                <div
+                  style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 14px; color: var(--das-role-text-secondary);">
+                  <div>
+                    <strong>Số tiền: </strong>
+                    <span
+                      style="color: var(--das-semantic-success, #22A06B); font-weight: 500;">{{formatVND(payment.amount)}}</span>
+                  </div>
+                  <div><strong>Phương thức:</strong> {{payment.paymentMethod || 'Không rõ'}}</div>
+                  <div><strong>Ngày giao dịch:</strong> {{payment.paidAt ? (payment.paidAt | date:'dd/MM/yyyy HH:mm') :
+                    'N/A'}}</div>
+                </div>
+              </div>
+              }
+            </div>
+            } @else {
+            <div class="empty-state"
+              style="padding: 32px 0; display: flex; flex-direction: column; align-items: center; color: var(--das-neutral-steel);">
+              <i class="fa-solid fa-receipt" style="font-size: 32px; margin-bottom: 12px;"></i>
+              <p>Chưa có giao dịch nào.</p>
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer" style="justify-content: flex-end; padding: 16px 24px;">
+        <button type="button" class="btn-primary-modal" (click)="closeViewModal()">Đóng</button>
+      </div>
+    </div>
+    }
+    }
+  </div>
+</div>

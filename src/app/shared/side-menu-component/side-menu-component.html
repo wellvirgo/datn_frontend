@@ -1,0 +1,37 @@
+<div class="side-menu-wrapper" #menuContainer [class.is-sticky]="isSticky()">
+
+    <button class="menu-trigger-btn" (click)="toggleMenu()">
+        <div class="hamburger-icon">
+            <span></span><span></span><span></span>
+        </div>
+        <span class="menu-text">MENU</span>
+    </button>
+</div>
+
+<div class="popup-content" [class.open]="isMenuOpen()">
+    <div class="d-flex justify-content-end my-2">
+        <button class="btn btn-close" (click)="toggleMenu()"></button>
+    </div>
+    <ul>
+        <li><a routerLink="/home">Trang chủ</a></li>
+        <li><a routerLink="/room-types">Loại phòng</a></li>
+        @if (authService.isAuthenticated()) {
+        <li><a routerLink="/booking-history">Lịch sử đặt phòng</a></li>
+        }
+        <li><a href="#">Liên hệ</a></li>
+        @if (authService.isAdmin() || authService.isManager() || authService.isReceptionist()) {
+        <li><a routerLink="/dashboard">Dashboard</a></li>
+        }
+        @if (authService.isAuthenticated()) {
+        <li><a class="btn-signout" (click)="logout()">Đăng xuất</a></li>
+        }@else {
+        <li><a routerLink="/login">Đăng nhập</a></li>
+        }
+
+    </ul>
+    <div class="user-info">
+        @if (authService.isAuthenticated()) {
+        <div class="user-email">Xin chào, <span>{{ authService.email() }}</span></div>
+        }
+    </div>
+</div>

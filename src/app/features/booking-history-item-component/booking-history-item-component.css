@@ -1,0 +1,341 @@
+.booking-item-card {
+  background-color: #fff;
+  border: 1px solid var(--gold-pale, #F5EDD5);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.booking-item-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: var(--gold-light, #E8C97A);
+}
+
+.booking-overview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  cursor: pointer;
+  background-color: #ffffff;
+  user-select: none;
+  gap: 26px;
+}
+
+.overview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.overview-section.right-align {
+  text-align: right;
+  margin-left: auto;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--text-dark-4, #666);
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value {
+  font-size: 16px;
+  color: var(--dark, #0D0D0D);
+  font-weight: 500;
+}
+
+.highlight {
+  color: var(--gold, #C9A84C);
+  font-weight: 600;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--dark, #0D0D0D);
+}
+
+.expand-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--gold, #C9A84C);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.expand-btn:focus {
+  outline: none;
+}
+
+.expand-btn:hover {
+  background-color: var(--cream, #F7F2EA);
+}
+
+.expand-btn svg {
+  transition: transform 0.4s ease-in-out;
+}
+
+.expand-btn svg.rotated {
+  transform: rotate(180deg);
+}
+
+/* Collapsible Section */
+.booking-details-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #fafbfc;
+}
+
+.booking-details-wrapper>.booking-details-content {
+  overflow: hidden;
+}
+
+.booking-item-card.is-expanded .booking-details-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.inner-content {
+  padding: 0 24px 24px 24px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px dashed var(--gold-light, #E8C97A);
+  margin: 0 0 24px 0;
+  opacity: 0.6;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.detail-group h4 {
+  font-size: 14px;
+  color: var(--gold, #C9A84C);
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.detail-group p {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.detail-group p .label {
+  text-transform: none;
+  letter-spacing: normal;
+  min-width: 130px;
+  font-size: 14px;
+}
+
+.group-val {
+  color: var(--dark-3, #242424);
+  font-weight: 500;
+  text-align: right;
+  flex-grow: 1;
+}
+
+.cancellation-rule {
+  font-style: italic;
+  font-weight: normal;
+  color: var(--text-dark-4, #555);
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.cancellation-rule .info-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--text-dark-4, #555);
+}
+
+.cancellation-rule .cancellation-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #eee;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.status-badge.PAID,
+.status-badge.CONFIRMED,
+.status-badge.CHECK_IN,
+.status-badge.CHECK_OUT {
+  background-color: #E6F4EA;
+  color: #1E8E3E;
+}
+
+.status-badge.UNPAID,
+.status-badge.PENDING_PAYMENT {
+  background-color: #FEF7E0;
+  color: #F29900;
+}
+
+.status-badge.CANCELED,
+.status-badge.EXPIRED {
+  background-color: #FCE8E6;
+  color: #D93025;
+}
+
+.status-badge.PARTIAL {
+  background-color: #E8F0FE;
+  color: #1A73E8;
+}
+
+.status-badge.REFUNDED {
+  background-color: #F1F3F4;
+  color: #5F6368;
+}
+
+.price-due {
+  color: var(--error, #E26060);
+  font-weight: 600;
+}
+
+.rooms-section h4 {
+  font-size: 14px;
+  color: var(--gold, #C9A84C);
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  border-top: 1px solid var(--cream, #F7F2EA);
+  padding-top: 24px;
+}
+
+.room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.room-item {
+  background-color: #fff;
+  border: 1px solid var(--gold-pale, #F5EDD5);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.room-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.room-name {
+  font-weight: 600;
+  color: var(--dark, #0D0D0D);
+  font-size: 15px;
+}
+
+.room-number {
+  background-color: var(--cream, #F7F2EA);
+  color: var(--gold, #C9A84C);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.room-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: var(--text-dark-4, #555);
+}
+
+.room-guests {
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+
+.room-price {
+  font-weight: 600;
+  color: var(--dark-2, #181818);
+  font-size: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .booking-overview {
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+
+  .overview-section.right-align {
+    text-align: left;
+    margin-left: 0;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--cream, #F7F2EA);
+    padding-top: 12px;
+    margin-top: 8px;
+  }
+
+  .inner-content {
+    padding: 0 16px 16px 16px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .detail-group p {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .group-val {
+    text-align: left;
+  }
+}

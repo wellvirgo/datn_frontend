@@ -1,0 +1,191 @@
+<div class="sidebar" [class.collapsed]="isCollapsed">
+    <!-- Logo / Brand -->
+    <div class="sb-logo">
+        <div class="sb-logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#DAEEFF" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <path d="M9 22V12h6v10" />
+            </svg>
+        </div>
+        <div class="sb-logo-text">
+            <div class="sb-logo-name">August Hotel</div>
+            <div class="sb-logo-sub">Hệ thống quản lý</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sb-nav">
+
+        <!-- Section: Tổng quan -->
+        <span class="sb-section-label">Tổng quan</span>
+
+        <div class="nav-item" [class.active]="activeMenu === 'dashboard'" (click)="setActive('dashboard')">
+            <div class="ni-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                </svg>
+            </div>
+            <div class="ni-content">
+                <div class="ni-label">Dashboard</div>
+                <div class="ni-sub">Tổng quan hôm nay</div>
+            </div>
+        </div>
+
+        <!-- Section: Quản lý -->
+        <span class="sb-section-label">Quản lý</span>
+
+        <div class="nav-item" [class.active]="activeMenu === 'room-types'" (click)="setActive('room-types')">
+            <div class="ni-icon">
+                <i class="fa-solid fa-hotel"></i>
+            </div>
+            <div class="ni-content">
+                <div class="ni-label">Loại phòng</div>
+                <div class="ni-sub">Quản trị loại phòng</div>
+            </div>
+            <span class="ni-badge badge-blue">4</span>
+        </div>
+
+        <div class="nav-item" [class.active]="activeMenu === 'bookings'" (click)="setActive('bookings')">
+            <div class="ni-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+            </div>
+            <div class="ni-content">
+                <div class="ni-label">Đặt phòng</div>
+                <div class="ni-sub">Lịch & đặt chỗ</div>
+            </div>
+            <span class="ni-badge badge-red">12</span>
+        </div>
+
+        <div class="nav-item" [class.active]="activeMenu === 'customers'" (click)="setActive('customers')">
+            <div class="ni-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+            </div>
+            <div class="ni-content">
+                <div class="ni-label">Khách hàng</div>
+                <div class="ni-sub">Hồ sơ & lịch sử</div>
+            </div>
+        </div>
+
+        <div class="nav-item" [class.active]="activeMenu === 'rooms'" (click)="setActive('rooms')">
+            <div class="ni-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <path d="M9 22V12h6v10" />
+                </svg>
+            </div>
+            <div class="ni-content">
+                <div class="ni-label">Quản lý phòng</div>
+                <div class="ni-sub">{{totalRooms.value()}} phòng</div>
+            </div>
+            <span class="ni-badge badge-warn">7</span>
+        </div>
+
+        <div class="sb-divider"></div>
+
+        @if(this.authService.isAdmin() || this.authService.isManager()){
+        <!-- Section: Phân tích -->
+        <span class="sb-section-label">Phân tích</span>
+
+        <div class="nav-item" [class.active]="activeMenu === 'reports-revenue'" (click)="setActive('reports-revenue')">
+            <div class="ni-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+            </div>
+            <div class="ni-content">
+                <div class="ni-label">Báo cáo</div>
+                <div class="ni-sub">Doanh thu & thống kê</div>
+            </div>
+        </div>
+
+        <div class="sb-divider"></div>
+
+        <!-- Section: Hệ thống -->
+        <span class="sb-section-label">Hệ thống</span>
+
+        <div class="nav-item" [class.active]="activeMenu === 'users'" (click)="setActive('users')">
+            <div class="ni-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="4"></circle>
+                    <path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path>
+                </svg>
+            </div>
+            <div class="ni-content">
+                <div class="ni-label">Người dùng</div>
+                <div class="ni-sub">Quản lý người dùng</div>
+            </div>
+        </div>
+        }
+    </nav>
+
+    <!-- Footer: User profile -->
+    <div class="sb-footer">
+        <tui-loader [showLoader]="userSummary.isLoading()" [overlay]="true">
+            <div class="sb-user" (click)="toggleUserMenu($event)">
+                @if(userSummary.error()){
+                <div class="sb-user-error">Lỗi khi tải thông tin người dùng</div>
+                }@else {
+                @if (userSummary.value()?.avatarUrl) {
+                <div class="user-avatar">
+                    <img [src]="userSummary.value()?.avatarUrl" alt="User avatar">
+                </div>
+                }@else {
+                <div class="user-avatar">{{userSummary.value()?.fullName?.substring(0, 2)?.toUpperCase()??'US'}}</div>
+                }
+                <div class="user-info">
+                    <div class="user-name">{{userSummary.value()?.fullName?.toUpperCase()}}</div>
+                    <div class="user-role">{{formatUserRole(userSummary.value()?.role ?? '')}}</div>
+                </div>
+                <div class="user-status-dot"></div>
+
+                @if(isUserMenuOpen) {
+                <!-- Sub-menu popup -->
+                <div class="user-sub-menu" (click)="$event.stopPropagation()">
+                    <div class="usm-item">
+                        <i class="fa-regular fa-user"></i>
+                        <span>Thông tin chi tiết</span>
+                    </div>
+                    <div class="usm-item danger" (click)="logout()">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Đăng xuất</span>
+                    </div>
+                </div>
+                }
+                }
+            </div>
+        </tui-loader>
+
+        <div class="sb-toggle">
+            <button class="toggle-btn" (click)="toggleCollapse()"
+                [attr.aria-label]="isCollapsed ? 'Mở rộng sidebar' : 'Thu gọn sidebar'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+</div>
