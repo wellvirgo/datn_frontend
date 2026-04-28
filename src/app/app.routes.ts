@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard, dashGuard } from './core/auth/auth-guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -6,13 +7,22 @@ export const routes: Routes = [
     { path: 'signup', loadComponent: () => import('./features/signup-component/signup-component').then(m => m.SignupComponent) },
     { path: 'home', loadComponent: () => import('./features/home-component/home-component').then(m => m.HomeComponent) },
     { path: 'availability-result', loadComponent: () => import('./features/availability-room-result-component/availability-room-result-component').then(m => m.AvailabilityRoomResultComponent) },
-    { path: 'payment-result', loadComponent: () => import('./shared/payment-result/payment-result-component/payment-result-component').then(m => m.PaymentResultComponent) },
+    {
+        path: 'payment-result',
+        loadComponent: () => import('./shared/payment-result/payment-result-component/payment-result-component').then(m => m.PaymentResultComponent),
+        canActivate: [authGuard],
+    },
     { path: 'room-types', loadComponent: () => import('./features/active-rt-list-component/active-rt-list-component').then(m => m.ActiveRtListComponent) },
     { path: 'room-type/:id', loadComponent: () => import('./features/pub-detail-room-type-component/pub-detail-room-type-component').then(m => m.PubDetailRoomTypeComponent) },
-    { path: 'booking-history', loadComponent: () => import('./features/booking-history-component/booking-history-component').then(m => m.BookingHistoryComponent) },
+    {
+        path: 'booking-history',
+        loadComponent: () => import('./features/booking-history-component/booking-history-component').then(m => m.BookingHistoryComponent),
+        canActivate: [authGuard],
+    },
     {
         path: 'dashboard',
         loadComponent: () => import('./features/dashboard-component/dashboard-component').then(m => m.DashboardComponent),
+        canActivate: [dashGuard],
         children: [
             { path: '', redirectTo: 'overview', pathMatch: 'full' },
             { path: 'overview', loadComponent: () => import('./features/das-overview-component/das-overview-component').then(m => m.DasOverviewComponent) },

@@ -103,16 +103,24 @@ export class AuthService {
   }
 
   public logout(isCallApi: boolean = true): Observable<any> {
-    localStorage.removeItem(AuthService.TOKEN_KEY);
-    this.roleSignal.set(null);
-    this.router.navigate(['/login']);
-
     if (!isCallApi) {
-      return of(null);
+      return of(null).pipe(
+        tap(() => {
+          localStorage.removeItem(AuthService.TOKEN_KEY);
+          this.roleSignal.set(null);
+          this.router.navigate(['/login']);
+        }),
+      );
     }
 
     return this.httpClient.post<any>(`${AuthService.API_URL}/logout`, {}, {
       withCredentials: true,
-    });
+    }).pipe(
+      tap(() => {
+        localStorage.removeItem(AuthService.TOKEN_KEY);
+        this.roleSignal.set(null);
+        this.router.navigate(['/login']);
+      }),
+    );
   }
 }
