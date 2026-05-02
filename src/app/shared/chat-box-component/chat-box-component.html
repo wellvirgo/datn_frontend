@@ -32,37 +32,45 @@
             </div>
         </div>
         } @else {
-        <div class="chatbox-messages cus-scroll">
-            @for (message of messages(); track $index) {
-            <article class="message-row" [class.user]="message.role === 'user'">
-                <div class="message-bubble">
-                    @if(message.role === 'assistant') {
-                    <markdown [data]="message.content"></markdown>
-                    } @else {
-                    <p>{{ message.content }}</p>
-                    }
-                    <time>{{ message.time }}</time>
-                </div>
-            </article>
-            }
+        <div class="chatbox-messages-wrapper">
+            <div class="chatbox-messages cus-scroll" #messagesContainer (scroll)="onMessagesScroll()">
+                @for (message of messages(); track $index) {
+                <article class="message-row" [class.user]="message.role === 'user'">
+                    <div class="message-bubble">
+                        @if(message.role === 'assistant') {
+                        <markdown [data]="message.content"></markdown>
+                        } @else {
+                        <p>{{ message.content }}</p>
+                        }
+                        <time>{{ message.time }}</time>
+                    </div>
+                </article>
+                }
 
-            @if (isLoading()) {
-            <article class="message-row">
-                <div class="message-bubble typing-indicator">
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                </div>
-            </article>
-            }
+                @if (isLoading()) {
+                <article class="message-row">
+                    <div class="message-bubble typing-indicator">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </article>
+                }
 
-            @if (showNewChatButton()) {
-            <div class="new-chat-action">
-                <button type="button" class="new-chat-btn" (click)="startNewChat()">
-                    <i class="fa-solid fa-rotate-right"></i>
-                    Tạo đoạn chat mới
-                </button>
+                @if (showNewChatButton()) {
+                <div class="new-chat-action">
+                    <button type="button" class="new-chat-btn" (click)="startNewChat()">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        Tạo đoạn chat mới
+                    </button>
+                </div>
+                }
             </div>
+
+            @if (showScrollToBottom) {
+            <button type="button" class="scroll-to-bottom-btn" (click)="scrollToBottom()">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
             }
         </div>
         }

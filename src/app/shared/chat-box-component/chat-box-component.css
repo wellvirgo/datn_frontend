@@ -61,6 +61,59 @@
     min-height: 0;
 }
 
+.chatbox-messages-wrapper {
+    grid-row: 3;
+    min-height: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.chatbox-messages-wrapper .chatbox-messages {
+    grid-row: unset;
+    flex: 1;
+    min-height: 0;
+}
+
+.scroll-to-bottom-btn {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(201, 168, 76, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: fade-in-up 0.25s ease;
+    z-index: 5;
+}
+
+.scroll-to-bottom-btn:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 6px 18px rgba(201, 168, 76, 0.55);
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
 .chatbox-input {
     grid-row: 4;
 }

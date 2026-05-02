@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatBotService } from '../../core/services/chat-bot-service';
 import { MarkdownModule } from 'ngx-markdown';
@@ -18,8 +18,11 @@ interface ChatMessage {
   styleUrl: './chat-box-component.css',
 })
 export class ChatBoxComponent {
+  @ViewChild('messagesContainer') private messagesContainerRef!: ElementRef<HTMLDivElement>;
+
   protected isChatOpen = false;
   protected draftMessage = '';
+  protected showScrollToBottom = false;
   protected readonly isLoading = signal(false);
   protected readonly showNewChatButton = signal(false);
 
@@ -54,6 +57,7 @@ export class ChatBoxComponent {
 
     this.isLoading.set(true);
     this.draftMessage = '';
+    this.scrollToBottomSmooth();
 
     this.chatService.sendMessage(this.chatSessionId, content).subscribe({
       next: (data) => {
@@ -63,7 +67,10 @@ export class ChatBoxComponent {
           time: this.buildTimeLabel(),
         });
       },
-      complete: () => this.isLoading.set(false),
+      complete: () => {
+        this.isLoading.set(false);
+        this.scrollToBottomSmooth();
+      },
       error: (error) => {
         this.isLoading.set(false);
         this.messages().push({
@@ -84,6 +91,9 @@ export class ChatBoxComponent {
 
   protected toggleChat(): void {
     this.isChatOpen = !this.isChatOpen;
+    if (this.isChatOpen) {
+      this.scrollToBottomSmooth();
+    }
   }
 
   protected handleKeydown(event: KeyboardEvent): void {
@@ -98,6 +108,26 @@ export class ChatBoxComponent {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
+    });
+  }
+
+  protected onMessagesScroll(): void {
+    const el = this.messagesContainerRef?.nativeElement;
+    if (!el) return;
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    this.showScrollToBottom = distanceFromBottom > 100;
+  }
+
+  protected scrollToBottom(): void {
+    const el = this.messagesContainerRef?.nativeElement;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+  }
+
+  private scrollToBottomSmooth(): void {
+    setTimeout(() => {
+      this.scrollToBottom();
+      this.showScrollToBottom = false;
     });
   }
 
