@@ -150,11 +150,15 @@
 
                             <div class="d-flex justify-content-between mb-3 align-items-center">
                                 <span class="text-muted fw-semibold">Nhận phòng:</span>
-                                <span class="fw-bold text-dark fs-6">{{ checkIn.toString() }}</span>
+                                <span class="fw-bold text-dark fs-6">
+                                    {{(checkInOutPolicy()['check_in_time'] ?? '12:00') + ' - ' + checkIn.toString()}}
+                                </span>
                             </div>
                             <div class="d-flex justify-content-between mb-3 align-items-center">
                                 <span class="text-muted fw-semibold">Trả phòng:</span>
-                                <span class="fw-bold text-dark fs-6">{{ checkOut.toString() }}</span>
+                                <span class="fw-bold text-dark fs-6">
+                                    {{(checkInOutPolicy()['check_out_time'] ?? '12:00') + ' - ' + checkOut.toString()}}
+                                </span>
                             </div>
                             <div class="d-flex justify-content-between mb-3 align-items-center">
                                 <span class="text-muted fw-semibold">Số đêm:</span>

@@ -31,6 +31,8 @@ export interface BookingHistoryItemResDto {
     cancellationDisplayText: string;
     details: DetailHistoryItemResDto[];
     createdAt: string;
+    checkInTime: string;
+    checkOutTime: string;
 }
 
 export interface DasBookingItemRes {

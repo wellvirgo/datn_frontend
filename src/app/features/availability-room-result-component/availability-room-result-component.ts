@@ -12,7 +12,7 @@ import { SideMenuComponent } from "../../shared/side-menu-component/side-menu-co
 import { CurrencyPipe, NgClass } from '@angular/common';
 import { BookingService } from '../../core/services/booking-service';
 import { NotifyService } from '../../core/common/notify-service';
-import { Router } from '@angular/router';
+import { HotelSettingService } from '../../core/services/hotel-setting.service';
 
 @Component({
   selector: 'app-availability-room-result-component',
@@ -26,7 +26,7 @@ export class AvailabilityRoomResultComponent implements OnInit {
   private bookingButtonState = inject(BookingButtonState);
   private bookingService = inject(BookingService);
   private notifyService = inject(NotifyService);
-  private router = inject(Router);
+  private readonly hotelSettingService = inject(HotelSettingService);
 
   ngOnInit(): void {
     this.loadAvailabilityResults();
@@ -34,6 +34,7 @@ export class AvailabilityRoomResultComponent implements OnInit {
 
   protected checkIn = DateUtils.convertToTuiDay(this.bookingButtonState.checkInDate());
   protected checkOut = DateUtils.convertToTuiDay(this.bookingButtonState.checkOutDate());
+  protected checkInOutPolicy = signal<any>({});
   protected availabilityResults = signal<AvailabilityRoomTypeRes[]>([]);
   protected cancellationPolicy = signal<CancellationPolicy | null>(null);
 
@@ -77,6 +78,9 @@ export class AvailabilityRoomResultComponent implements OnInit {
 
   book() {
     this.openBookingModal();
+    this.hotelSettingService.getHotelCheckInOutPolicy().subscribe(policy => {
+      this.checkInOutPolicy.set(policy);
+    });
   }
 
   openBookingModal() {

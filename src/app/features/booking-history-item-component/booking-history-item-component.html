@@ -45,7 +45,8 @@
           <div class="detail-group">
             <h4>Thông tin thanh toán</h4>
             <p><span class="label">Trạng thái:</span>
-              <span class="status-badge" [ngClass]="item().paymentStatus">{{item().paymentStatus}}</span>
+              <span class="status-badge"
+                [ngClass]="item().paymentStatus">{{bookingPaymentStatusStringify(item().paymentStatus)}}</span>
             </p>
             <p><span class="label">Đã thanh toán:</span> <span class="group-val">{{item().paidAmount |
                 currency:'VND'}}</span></p>
@@ -63,7 +64,8 @@
             <p><span class="label">Ngày đặt:</span> <span class="group-val">{{item().createdAt |
                 date:'dd/MM/yyyy'}}</span></p>
             <p><span class="label">Trạng thái:</span>
-              <span class="status-badge" [ngClass]="item().bookingStatus">{{item().bookingStatus}}</span>
+              <span class="status-badge"
+                [ngClass]="item().bookingStatus">{{bookingStatusStringify(item().bookingStatus)}}</span>
             </p>
             <p><span class="label">Chính sách hủy:</span>
               <span class="group-val cancellation-rule" [title]="item().cancellationDisplayText || 'Không có'">
@@ -75,6 +77,10 @@
                 </svg>
                 <span class="cancellation-text">{{item().cancellationDisplayText || 'Không có'}}</span>
               </span>
+            </p>
+            <p>
+              <span class="label">Giờ nhận - trả phòng:</span>
+              <span class="group-val">{{item().checkInTime}} - {{item().checkOutTime}}</span>
             </p>
           </div>
         </div>
