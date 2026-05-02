@@ -9,15 +9,15 @@
                 <div class="col-md-4">
                     <tui-textfield tuiTextfieldSize="l" class="w-100" [tuiTextfieldCleaner]="false">
                         <label tuiLabel>Ngày nhận phòng</label>
-                        <input tuiInputDate [(ngModel)]="checkIn" />
-                        <tui-calendar *tuiTextfieldDropdown></tui-calendar>
+                        <input tuiInputDate [ngModel]="checkIn" (ngModelChange)="onCheckInChange($event)" />
+                        <tui-calendar *tuiTextfieldDropdown [min]="today"></tui-calendar>
                     </tui-textfield>
                 </div>
                 <div class="col-md-4">
                     <tui-textfield tuiTextfieldSize="l" class="w-100" [tuiTextfieldCleaner]="false">
                         <label tuiLabel>Ngày trả phòng</label>
                         <input tuiInputDate [(ngModel)]="checkOut" />
-                        <tui-calendar *tuiTextfieldDropdown></tui-calendar>
+                        <tui-calendar *tuiTextfieldDropdown [min]="minCheckOut"></tui-calendar>
                     </tui-textfield>
                 </div>
                 <div class="col-md-4">

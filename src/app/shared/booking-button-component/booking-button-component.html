@@ -25,7 +25,7 @@
                 <tui-textfield class="custom-datepicker" [disabledItemHandler]="checkInHandler"
                     [tuiTextfieldCleaner]="false">
                     <label tuiLabel class="text-center">Ngày nhận phòng</label>
-                    <input tuiInputDate [max]="maxCheckIn" [min]="minCheckIn" [(ngModel)]="checkIn"
+                    <input tuiInputDate [max]="maxCheckIn" [min]="minCheckIn" [ngModel]="checkIn"
                         (ngModelChange)="onCheckInChange($event)" class="text-center">
                     <tui-calendar *tuiTextfieldDropdown></tui-calendar>
                 </tui-textfield>

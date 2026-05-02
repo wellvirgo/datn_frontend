@@ -1,4 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { TuiDay } from '@taiga-ui/cdk';
 import { FormsModule } from '@angular/forms';
 import { TuiButton, tuiDateFormatProvider, TuiTextfield, TuiLoader } from "@taiga-ui/core";
 import { TuiInputDate } from '@taiga-ui/kit';
@@ -34,6 +35,18 @@ export class AvailabilityRoomResultComponent implements OnInit {
 
   protected checkIn = DateUtils.convertToTuiDay(this.bookingButtonState.checkInDate());
   protected checkOut = DateUtils.convertToTuiDay(this.bookingButtonState.checkOutDate());
+  protected today = TuiDay.currentLocal();
+
+  protected get minCheckOut(): TuiDay {
+    return this.checkIn.append({ day: 1 });
+  }
+
+  protected onCheckInChange(newCheckIn: TuiDay): void {
+    this.checkIn = newCheckIn;
+    if (this.checkIn.daySameOrAfter(this.checkOut)) {
+      this.checkOut = this.checkIn.append({ day: 1 });
+    }
+  }
   protected checkInOutPolicy = signal<any>({});
   protected availabilityResults = signal<AvailabilityRoomTypeRes[]>([]);
   protected cancellationPolicy = signal<CancellationPolicy | null>(null);
