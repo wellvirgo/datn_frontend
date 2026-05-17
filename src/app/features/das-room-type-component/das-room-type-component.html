@@ -3,7 +3,7 @@
     <div class="header-actions">
       <div class="search-box">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" class="search-input" placeholder="Tìm kiếm theo tên phòng..." [ngModel]="searchQuery()"
+        <input type="text" class="search-input" placeholder="Tìm kiếm theo tên loại phòng..." [ngModel]="searchQuery()"
           (ngModelChange)="updateSearch($event)">
       </div>
       @if(authService.isAdmin() || authService.isManager()){
